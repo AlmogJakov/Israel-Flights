@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@faker-js/faker": "^6.2.0",
+    "ejs": "^3.1.7",
+    "express": "^4.17.3",
+    "mysql": "^2.18.1",
+    "node-rdkafka": "^2.12.0",
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.4.1",
+    "uuid": "^8.3.2"
+  }
+  ,
+  "scripts": {
+      "start": "node serverA.js",
+      "devStart": "nodemon serverA.js"
+  }
+}

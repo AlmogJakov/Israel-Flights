@@ -1,0 +1,116 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script> // functions 
+  let socket;
+
+  // var Jerusalem;
+  // var Nahariya;
+  // var Haifa;
+  // var Tel_Aviv;
+  // var Ashdod;
+  // var Ashkelon;
+  // var Beer_Sheva;
+
+  function initSocket() {
+
+      //socket is global
+       socket = io.connect();
+      alert("connected");
+      //Recive call details for put in last calls
+      socket.on('New_Call', function (msg) {
+          for(let i=4 ; i >= 1 ; i--){
+            document.getElementById('name-user' + (i+1)).innerHTML = document.querySelector('#name-user' + i).textContent;
+            document.getElementById('phone-user'+ (i+1)).innerHTML = document.querySelector('#phone-user' + i).textContent;
+            document.getElementById('time-user'+ (i+1)).innerHTML = document.querySelector('#time-user' + i).textContent;
+            document.getElementById('topic-user'+ (i+1)).innerHTML = document.querySelector('#topic-user' + i).textContent;
+          }
+          
+          document.getElementById('name-user1').innerHTML = msg.firstname + " " + msg.lastname;
+          document.getElementById('phone-user1').innerHTML = msg.phone;
+          document.getElementById('time-user1').innerHTML = (msg.totaltime/60).toFixed(3);
+          document.getElementById('topic-user1').innerHTML = msg.topic;
+          
+
+          // //Refresh chart with new data on calls by city
+          // Jerusalem = msg.Jerusalem;
+          // Nahariya = msg.Nahariya;;
+          // Haifa = msg.Haifa;
+          // Tel_Aviv = msg.Tel_Aviv;
+          // Ashdod = msg.Ashdod;
+          // Ashkelon = msg.Ashkelon;
+          // Beer_Sheva = msg.Beer_Sheva;
+          
+          // const data = {
+          //   labels: ['Jerusalem', 'Nahariya', 'Haifa', 'Tel-Aviv', 'Ashdod', 'Ashkelon', 'Beer-Sheva'],
+          //   datasets: [{
+          //     label: 'My First Dataset',
+          //     data: [Jerusalem, Nahariya, Haifa, Tel_Aviv,Ashdod ,Ashkelon , Beer_Sheva],
+          //     backgroundColor: [
+          //     'rgb(50,205,50)', // green
+          //       'rgb(54, 162, 235)', // blue
+          //       'rgb(255, 205, 86)', // yellow
+          //       'rgb(255, 99, 132)', // light-red
+          //       'rgb(255, 51, 204)', //pink
+          //       'rgb(255, 51, 0)', //orange
+          //       'rgb(0, 0, 0)' //black
+          //     ],
+          //     hoverOffset: 4
+          //   }]
+          // };
+
+          // const config = {
+          //   type: 'doughnut',
+          //   data: data,
+          //   options: {
+          //     responsive: true,
+          //     plugins: {
+          //       legend: {
+          //         position: 'top',
+          //         labels: {
+          //                 // This more specific font property overrides the global property
+          //                 font: {
+          //                     size: 14
+          //                 }
+          //         }
+          //       },
+          //       title: {
+          //         display: true,
+          //         text: 'Calls By City'
+          //       },
+          //     }
+          //   },
+          // };
+          
+         
+
+          // Chart.defaults.font.size = 20;
+          // let myChart = new Chart(
+          //   document.getElementById('myChart'),
+          //   config
+          // );
+
+          
+
+      });
+
+
+      //Recive new call from kafka consume
+      socket.on('allData', function (msg) { 
+        document.getElementById('join').innerHTML = msg.join;
+        document.getElementById('service').innerHTML = msg.service;
+        document.getElementById('complaint').innerHTML = msg.complaint;
+        document.getElementById('leave').innerHTML = msg.leave;
+        document.getElementById('totalwaitingcalls').innerHTML = msg.waiting;
+        document.getElementById('totalcalls').innerHTML = parseInt(msg.join) + parseInt(msg.service) + parseInt(msg.complaint) + parseInt(msg.leave);
+        document.getElementById('averageTotalTime').innerHTML = msg.averageTotalTime;
+
+      });
+      
+  }
+  function resetInfo() {
+        socket.emit('resetDB');
+  }
+  
+</script>

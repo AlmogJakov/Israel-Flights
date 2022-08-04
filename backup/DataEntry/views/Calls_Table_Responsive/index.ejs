@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Calls Table</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<!--===============================================================================================-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script type='text/javascript'>
+
+        function initSocket() {
+            //socket is global
+            socket = io.connect();
+            alert("connected");
+        }
+
+        // //Send to socket the current waiting calls
+        // function sendMessage(total) {
+        //     socket.emit("totalWaitingCalls",total);
+        // }
+
+        var countCalls = 0;
+        var rows = <%-JSON.stringify(data)%>;
+
+        function randomPerson(){
+            var min = 0;
+            var max = Math.floor(rows.length);
+            var randomnumber = Math.floor(Math.random() * (max - min + 1)) + min - 1;
+
+            return rows[randomnumber];
+        }
+
+
+        //Show the data on screen
+        function NewCall() {
+
+            countCalls++;
+            var counter = document.querySelector('.counter');
+            counter.innerHTML = countCalls;
+
+            var tr = document.getElementById('openConversations').insertRow();
+            var cID = tr.insertCell(0);
+            var cFirstName = tr.insertCell(1);
+            var cLastName = tr.insertCell(2);
+            var cPhone = tr.insertCell(3);
+            var cCity = tr.insertCell(4);
+            var cGender = tr.insertCell(5);
+            var cAge = tr.insertCell(6);
+            var cPrevCalls = tr.insertCell(7);
+            var cStart = tr.insertCell(8);
+            var cProduct = tr.insertCell(9);
+            var cTopic = tr.insertCell(10);
+            var cEnd = tr.insertCell(11);
+
+            const date = Date.now();
+            const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric' })
+            const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }] = dateTimeFormat.formatToParts(date)
+
+            var person = randomPerson();
+            var randomPrevCalls = Math.floor(Math.random() * 200) + 1;
+            cID.innerHTML = `<div id=${person.id}>${person.id}</div>`;
+            cFirstName.innerHTML = `<div id=${person.first_name}>${person.first_name}</div>`;
+            cLastName.innerHTML = `<div id=${person.last_name}>${person.last_name}</div>`;
+            cPhone.innerHTML = `<div id=${person.phone}>${person.phone}</div>`;
+            cCity.innerHTML = `<div id=${person.city}>${person.city}</div>`;
+            cGender.innerHTML = `<div id=${person.gender}>${person.gender}</div>`;
+            cAge.innerHTML = `<div id=${person.age}>${person.age}</div>`;
+            cPrevCalls.innerHTML = `<div id=${randomPrevCalls}>${randomPrevCalls}</div>`;;
+            cStart.innerHTML = "<div id='" + date + "''>" + `${day}-${month}-${year} ,${hour}:${minute}` + "</div>";
+            cProduct.innerHTML = "<select><option value='internet'>Internet</option><option value='cables'>Cables</option><option value='cellular'>Cellular</option><option value='all'>All</option></select>";
+            cTopic.innerHTML = "<select><option value='join'>Join</option><option value='service'>Service</option><option value='complaint'>Complaint</option><option value='leave'>Leave</option></select>";
+            cEnd.innerHTML = "<button onclick='reportEndCall(this.parentNode.parentNode)' class='btn btn-danger'>Hang Up</button>";
+        
+            var message = {};
+            message.id = person.id;
+            message.firstName = person.first_name;
+            message.lastName = person.last_name;
+            message.phone = person.phone;
+            message.city = person.city;
+            message.gender = person.gender;
+            message.age = person.age;
+            message.prevCalls = randomPrevCalls;
+            
+            //Send to socket the call details without topic (to predict in BigML)
+            socket.emit("callDetails", message);
+            //Sent to socket the total waiting calls
+            socket.emit("totalWaitingCalls",countCalls);
+
+        }
+
+        function reportEndCall(row, person) {
+            
+            var totalCalls = parseInt(document.getElementById("total").value) || 0;
+            if (parseInt(totalCalls) > 0) {
+                document.getElementById("total").value = (--totalCalls) + "";
+            }
+
+            var message = {};
+            message.id = row.cells[0].getElementsByTagName('div')[0].id;
+            message.firstName = row.cells[1].getElementsByTagName('div')[0].id;
+            message.lastName = row.cells[2].getElementsByTagName('div')[0].id;
+            message.phone = row.cells[3].getElementsByTagName('div')[0].id;
+            message.city = row.cells[4].getElementsByTagName('div')[0].id;
+            message.gender = row.cells[5].getElementsByTagName('div')[0].id;
+            message.age = row.cells[6].getElementsByTagName('div')[0].id;
+            message.prevCalls = row.cells[7].getElementsByTagName('div')[0].id;
+            var startcall = row.cells[8].getElementsByTagName('div')[0].id;
+            message.totalTime = (parseInt(Date.now()) - parseInt(startcall)) / 1000; // seconds
+            message.product = (row.cells[9].getElementsByTagName('select')[0].value);
+            message.period = document.getElementById("period").value;
+            message.topic = (row.cells[10].getElementsByTagName('select')[0].value);
+
+            //Send to socket the call details
+            socket.emit("callDetails", message);
+            deleteRow(row);
+        }
+        
+        //delete row after push 'end'
+        function deleteRow(row) {
+            var i = row.rowIndex;
+            document.getElementById('openConversations').deleteRow(i);
+
+            countCalls--;
+            var counter = document.querySelector('.counter');
+            counter.innerHTML = countCalls;
+            //Sent to socket the total waiting calls
+            socket.emit("totalWaitingCalls",countCalls);
+        }
+    </script>
+	<!--===============================================================================================-->
+</head>
+
+<body>
+
+	<h1>Call Center</h1>
+	<br>
+	<img src="images/icons/phoneCall.png" width="250" height="200" alt="phoneCall" class="center">
+	<br>
+
+	<!-- why body tag appears twice? -->
+
+	<body onload="initSocket()">
+		<div type="number" id="total" min="0" max="200" value="0" class="NumberTitle">Total Waiting calls:
+		</div>
+        <h2 class="counter"></h2>
+		<br>
+
+		<div class="d-grid gap-2 col-6 mx-auto text-center">
+			<!-- <input type="button" value="Set" onclick="sendMessage(total.value)" class="btn btn-dark btn-lg" /> -->
+            <h5 style="color:white;">Period: </h5>
+		
+			<select class="selectSpinner" id="period">
+				<option value='Holidays'>Holidays</option>
+				<option value="Summer Vacations">Summer Vacations</option>
+				<option value="Ordinary Days">Ordinary Days</option>
+			</select>
+
+		<br>
+		<br>
+		<input type="button" onclick="NewCall()" value="New Call" class="btn btn-success btn-lg"/></div>
+		<br>
+		<div class="limiter">
+				<div class="wrap-table100">
+					<div class="table100">
+						<table id="openConversations">
+							<thead>
+								<tr class="table100-head">
+									<th class="column1">ID</th>
+									<th class="column2">First Name</th>
+									<th class="column3">Last Name</th>
+									<th class="column4">Phone</th>
+									<th class="column5">City</th>
+									<th class="column6">Gender</th>
+									<th class="column7">Age</th>
+									<th class="column8">Prev. calls</th>
+									<th class="column9">Start Time</th>
+									<th class="column10">Product</th>
+									<th class="column11">Topic</th>
+									<th class="column12">End</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+		</div>
+
+	</body>
+
+
+
+	<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<div>
+    <canvas id="myChart" style="width: 200px; height: 200px;"></canvas>
+    
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+
+    var Jerusalem = 50
+    var Nahariya = 17
+    var Haifa = 32
+    var Tel_Aviv = 40
+    var Ashdod = 10
+    var Ashkelon = 30
+    var Beer_Sheva = 45
+
+    const data = {
+      labels: ['Jerusalem', 'Nahariya', 'Haifa', 'Tel-Aviv', 'Ashdod', 'Ashkelon', 'Beer-Sheva'],
+      datasets: [{
+        label: 'My First Dataset',
+        data: [Jerusalem, Nahariya, Haifa, Tel_Aviv,Ashdod ,Ashkelon , Beer_Sheva],
+        backgroundColor: [
+        'rgb(50,205,50)', // green
+          'rgb(54, 162, 235)', // blue
+          'rgb(255, 205, 86)', // yellow
+          'rgb(255, 99, 132)', // light-red
+          'rgb(255, 51, 204)', //pink
+          'rgb(255, 51, 0)', //orange
+          'rgb(0, 0, 0)' //black
+
+        ],
+        hoverOffset: 4
+      }]
+    };
+
+    const config = {
+      type: 'doughnut',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+                    // This more specific font property overrides the global property
+                    font: {
+                        size: 14
+                    }
+            }
+          },
+          title: {
+            display: true,
+            text: 'Calls By City'
+          },
+        }
+      },
+    };
+  </script>
+
+  <script>
+    Chart.defaults.font.size = 20;
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+  </script>
