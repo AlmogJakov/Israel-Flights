@@ -23,6 +23,7 @@ redis.setExpiresTime();
 io.on("connection", async (socket) => {
     //Get data from redis to dashboard
     let allDataArray = await redis.getAllData();
+    //console.log(allDataArray);
     let getAverageTime = await redis.getAverageTime();
     
     //Move to dashboard - number of calls by topics & number of waiting & number of calls by cities
@@ -44,7 +45,7 @@ io.on("connection", async (socket) => {
 // ------------Consumer from Kafka-----------------
 kafka.consumer.on("data", async (msg) => {
     const newCall = JSON.parse(msg.value);
-
+    //console.log(newCall);
     // **Store the data in Redis and after send to Dashboard */
     if(String(msg.value).length < 100) //Total wating calls
     {
