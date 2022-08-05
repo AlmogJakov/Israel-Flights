@@ -44,33 +44,34 @@ io.on("connection", async (socket) => {
 
 // ------------Consumer from Kafka-----------------
 kafka.consumer.on("data", async (msg) => {
+    console.log("ffffffffffffffffffffff");
     const newCall = JSON.parse(msg.value);
-    //console.log(newCall);
-    // **Store the data in Redis and after send to Dashboard */
-    if(String(msg.value).length < 100) //Total wating calls
-    {
-        redis.setTopic('TotalWaiting',parseInt(msg.value));
-    }
-    else if(String(msg.value).includes("topic")) // Details calls
-    {   
+    console.log(newCall);
+    // // **Store the data in Redis and after send to Dashboard */
+    // if(String(msg.value).length < 100) //Total wating calls
+    // {
+    //     redis.setTopic('TotalWaiting',parseInt(msg.value));
+    // }
+    // else if(String(msg.value).includes("topic")) // Details calls
+    // {   
 
-        io.emit("New_Call",
-        {firstname: newCall.firstName, lastname: newCall.lastName, phone: newCall.phone
-            , topic: newCall.topic, totaltime: newCall.totalTime});
+    //     io.emit("New_Call",
+    //     {firstname: newCall.firstName, lastname: newCall.lastName, phone: newCall.phone
+    //         , topic: newCall.topic, totaltime: newCall.totalTime});
 
-        redis.setTopic(newCall.topic,0);
-        redis.setCity(newCall.city);
-        redis.setAverageTime(newCall.totalTime);
-    }
+    //     redis.setTopic(newCall.topic,0);
+    //     redis.setCity(newCall.city);
+    //     redis.setAverageTime(newCall.totalTime);
+    // }
 
-    //Get data from redis to dashboard
-    let allDataArray = await redis.getAllData();
-    let getAverageTime = await redis.getAverageTime();
+    // //Get data from redis to dashboard
+    // let allDataArray = await redis.getAllData();
+    // let getAverageTime = await redis.getAverageTime();
     
-    //Send to front with socket
-    io.emit('allData', 
-    {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
-         leave: allDataArray[3], waiting: allDataArray[4], averageTotalTime: getAverageTime});
+    // //Send to front with socket
+    // io.emit('allData', 
+    // {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
+    //      leave: allDataArray[3], waiting: allDataArray[4], averageTotalTime: getAverageTime});
 });
 
 

@@ -22,12 +22,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', controllerRouter);
 
 // --- Socket.io - Produce call details to kafka ----------------
-const summoner = require('./models/flights');
+//const summoner = require('./models/flights');
 io.on("connection", (socket) => {
     console.log("new user connected");
-    kafka.publish(summoner.accoutDetails)
-    // socket.on("totalWaitingCalls", (msg) => { kafka.publish(msg) });
-    // socket.on("callDetails", (msg) => { kafka.publish(msg) });
+    //kafka.publish(summoner.accoutDetails)
+    socket.on("totalWaitingCalls", (msg) => { kafka.publish(msg) });
+    socket.on("callDetails", (msg) => { kafka.publish(msg) });
 });
 
 // v1 = express.Router();
