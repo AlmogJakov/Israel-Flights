@@ -17,7 +17,6 @@ var db = require("../models/mysql");
 function iterateFlights(database) {
   var result = {};
   var keys = Object.keys(database);
-  //var json = JSON.parse(data)
   const json = JSON.parse(JSON.stringify(database));
   for (var i = 2; i < keys.length - 1; i++) {
     var filghtID = keys[i];
@@ -45,42 +44,20 @@ function iterateFlights(database) {
         destination: dst,
       };
       result[filghtID].push(data);
-      //console.log(JSON.stringify(result));
-
-      //console.log(onGround);
-      //alert(i)
-      //break;
     }
   }
   return result;
 }
 
-// Produce flights!
+// ----------------- Produce flights -----------------
 const kafka = require("../models/produceKafka");
-// https://www.sohamkamani.com/nodejs/working-with-kafka/
-// we define an async function that writes a new message each second
+// async function that writes a new message each second: https://www.sohamkamani.com/nodejs/working-with-kafka/
 const produce = async () => {
   //await kafka.connect()
   let i = 0;
-
   // after the produce has connected, we start an interval timer
   setInterval(async () => {
     try {
-      // send a message to the configured topic with
-      // the key and value formed from the current value of `i`
-      // await kafka.publish({
-      // 	"topic":
-      // 	{"messages": [
-      // 		{
-      // 			"key": String(i),
-      // 			"value": "this is message " + i,
-      // 		},
-      // 	]},
-      // })
-      //console.log(flights.flightsDetails())
-      //await kafka.publish(flights.accoutDetails)
-      // if the message is written successfully, log it and increment `i`
-
       await axios
         .get(
           "https://data-cloud.flightradar24.com/zones/fcgi/feed.js?faa=1&bounds=41.449%2C21.623%2C16.457%2C53.063&satellite=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&estimated=1&maxage=14400&gliders=1&stats=1"
@@ -88,9 +65,6 @@ const produce = async () => {
         .then(function (response) {
           // handle success
           data = response.data;
-          //data = iterateFlights(data)
-          //return res.status(200).json(data)
-          //console.log(JSON.stringify(iterateFlights(data)));
           kafka.publish(JSON.stringify(iterateFlights(data)));
         })
         .catch(function (error) {
@@ -100,9 +74,6 @@ const produce = async () => {
         .then(function () {
           // always executed
         });
-
-      //const flights = require('../models/flights');
-      //console.log(flights.getflightsDetails)
       console.log("writes: ", i);
       i++;
     } catch (err) {
@@ -111,10 +82,9 @@ const produce = async () => {
   }, 5000);
 };
 produce();
-// console.log(flights.flightsDetails)
 
-//module.exports = produce
-
+// ----------------- Client -----------------
+// Return current flight details to client
 const flights = require("../models/flights");
 router.get("/", flights.flightsDetails);
 module.exports = router;

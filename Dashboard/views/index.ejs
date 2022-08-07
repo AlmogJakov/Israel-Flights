@@ -10,16 +10,25 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
-
     <!-- Reference to the Bing Maps SDK -->
     <script type='text/javascript'
         src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
-        async defer></script>
-
+        async defer>
+    </script>
+    <!--
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
-
+    let socket;
         var map = null;
         function setMap() {
+            socket = io.connect();
+            socket.on('flights', function (msg) {
+                add(msg);
+            });
+            alert("connected");
             // Initialize the map - USE YOUR OWN KEY !
             map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk" });
 			map.setView({
@@ -76,38 +85,36 @@
 		}
 		// end rotation
 		
-        function add()
+        function add(flightsData)
         {
-            var loc1 = new Microsoft.Maps.Location(37.983810,23.727539);
-            var loc2 = new Microsoft.Maps.Location(32.817280,34.988762);
-            var loc3 = new Microsoft.Maps.Location(30.044420, 31.235712);
-            var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
-          
-            // Add a pin to the map
-            var pin1 = new Microsoft.Maps.Pushpin(loc1);
-            var pin2 = new Microsoft.Maps.Pushpin(loc2);
-            var pin3 = new Microsoft.Maps.Pushpin(loc3);
+            //alert(flightsData);
+            map.entities.clear();
+            var json = JSON.parse(flightsData)
+            var keys = Object.keys(json);
+             //var json = JSON.parse(data)
+            //const json = JSON.parse(JSON.stringify(database));
+            // alert(keys);
+            for (var i = 0; i < keys.length; i++) {
+                var filghtID = keys[i];
+                var coordinate_x = JSON.stringify(json[filghtID][0]['coordinate_x']);
+                var coordinate_y = JSON.stringify(json[filghtID][0]['coordinate_y']);
+                var degree = JSON.stringify(json[filghtID][0]['degree']);
+                var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
+			    createRotatedImagePushpin(loc, 'https://i.ibb.co/K9YmQ75/airplane.png', degree, function (pin) {
+				    map.entities.push(pin);
+			    });
+
+                // var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
+                //     pin4 = new Microsoft.Maps.Pushpin(loc4, {
+                //     icon: 'https://i.ibb.co/K9YmQ75/airplane.png',
+                //     anchor: new Microsoft.Maps.Point(10, 10)
+                // });
+                // map.entities.push(pin4);
+
+                //var coordinate_x = flightData[0];
+                //alert(coordinate_x);
+            }
             
-            pin4 = new Microsoft.Maps.Pushpin(loc4, {
-                icon: 'airplane.png',
-                anchor: new Microsoft.Maps.Point(10, 10)
-            });
-           
-            // Create a polyline
-            var lineVertices = new Array(loc1, loc2);
-            var line = new Microsoft.Maps.Polyline(lineVertices);
-
-            //map.setView({ center: loc2, zoom: 4 });
-
-            map.entities.push(line);
-            map.entities.push(pin1);
-            map.entities.push(pin2);
-            map.entities.push(pin3);
-            //map.entities.push(pin4);
-			createRotatedImagePushpin(loc4, 'airplane.png', 45);
-			createRotatedImagePushpin(map.getCenter(), 'airplane.png', 45, function (pin) {
-				map.entities.push(pin);
-			});
 			
 			//setTimeout(function(){
 			//	map.entities.clear();
@@ -126,6 +133,22 @@
 		
 		
     </script>
+
+    <script>
+        //let socket;
+
+        //function initSocket() {
+        //socket is global
+        //socket = io.connect();
+        //alert("connected");
+        //socket = io.connect();
+        //socket.on('flights', function (msg) {
+        //    console.log("ffff");
+        //    add();
+        //});
+        //}<body onload="initSocket()"></body>
+    </script>
+    
 </head>
 
 <body onload="setMap()">
