@@ -3,8 +3,6 @@ const router = express.Router();
 module.exports = router;
 
 router.get("/", (req, res) => {
-  //(URL || Path , Call back function)
-  //res.render("dashboard/pages/dashboard");
   res.render("index");
 });
 

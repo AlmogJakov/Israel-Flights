@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 
 var connection = mysql.createConnection({
-  //Properties
+  // MySQL Config (Change to your own details)
   host: "localhost",
   user: "root",
   password: "123456",
@@ -18,7 +18,7 @@ connection.connect(function (err) {
 
 const mysqlConnection = {
   access_writing: async function (data_type_name) {
-    // In case the table does not exist - create it (happens if the table is dropped).
+    // In case the table does not exist - create it (it happens if the table is dropped).
     var sql = `CREATE TABLE IF NOT EXISTS \`access_archive\` (
       \`access_id\` int(11) NOT NULL auto_increment,
       \`data_type\` varchar(100) NOT NULL default \'\',
@@ -28,10 +28,6 @@ const mysqlConnection = {
     connection.query(sql, function (err, result) {
       if (err) throw err;
     });
-
-    //current_date = new Date().toLocaleString();
-    //const isoDate = new Date(current_date);
-    //const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
 
     // Get current date (in mysql format)
     current_date = new Date().toISOString().slice(0, 19).replace("T", " ");

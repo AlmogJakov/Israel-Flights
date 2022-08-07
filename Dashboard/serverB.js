@@ -10,13 +10,10 @@ const controllerRouter = require("./routes/controller"); //controller
 const path = require("path");
 
 //--------------Middleware------------------
-//app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
-//app.set('views', './views');
 app.set("views", path.join(__dirname, "views"));
+//app.set('views', './views');
 app.use(express.json());
-//**Init values in redis in 24:00 */
-//redis.setExpiresTime();
 
 //-------------Socket.io-------------------------
 io.on("connection", async (socket) => {

@@ -13,7 +13,7 @@ const path = require("path");
 //----------------- Middleware -----------------
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-//app.use(express.static("./views/Calls_Table_Responsive"));
+//app.use(express.static("./views/myview"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -24,15 +24,7 @@ app.use("/", controllerRouter);
 //const summoner = require('./models/flights');
 io.on("connection", (socket) => {
   console.log("new user connected");
-  //kafka.publish(summoner.accoutDetails)
-  //socket.on("totalWaitingCalls", (msg) => { kafka.publish(msg) });
-  //socket.on("callDetails", (msg) => { kafka.publish(msg) });
 });
-
-// v1 = express.Router();
-// app.use('/api/v1', v1)
-// const summoner = require('./models/flights');
-// v1.get('/summoner', summoner.accoutDetails)
 
 const Port = process.env.PORT | 3000;
 //http://localhost:3000
