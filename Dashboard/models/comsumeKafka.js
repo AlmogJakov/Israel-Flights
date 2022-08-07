@@ -1,17 +1,20 @@
-// https://www.cloudkarafka.com/ 
+// https://www.cloudkarafka.com/
 const Kafka = require("node-rdkafka");
 
 // ------------------------------------
 
 const kafkaConf = {
   "group.id": "cloudkarafka-example",
-  "metadata.broker.list": "sulky-01.srvs.cloudkafka.com:9094,sulky-02.srvs.cloudkafka.com:9094,sulky-03.srvs.cloudkafka.com:9094".split(","),
+  "metadata.broker.list":
+    "sulky-01.srvs.cloudkafka.com:9094,sulky-02.srvs.cloudkafka.com:9094,sulky-03.srvs.cloudkafka.com:9094".split(
+      ","
+    ),
   "socket.keepalive.enable": true,
   "security.protocol": "SASL_SSL",
   "sasl.mechanisms": "SCRAM-SHA-256",
   "sasl.username": "v28g6ayh",
   "sasl.password": "5d-hix-_k78Sc0mmRS-oqbeang-9si4q",
-  "debug": "generic,broker,security"
+  debug: "generic,broker,security",
 };
 
 const prefix = "v28g6ayh-";
@@ -53,31 +56,32 @@ const topic = `${prefix}default`;
 
 const topics = [topic];
 const consumer = new Kafka.KafkaConsumer(kafkaConf, {
-  "auto.offset.reset": "beginning"
+  "auto.offset.reset": "beginning",
 });
 
 consumer.on("error", (err) => {
   console.error(err);
 });
 
-consumer.on("ready", function(arg) {
+consumer.on("ready", function (arg) {
   console.log(`Consumer ${arg.name} ready - for Redis & Dashboard`);
   consumer.subscribe(topics);
   consumer.consume();
 });
 
-consumer.on("data", function(m) {
- console.log(m.value.toString());
+consumer.on("data", function (m) {
+  //console.log(m.value.toString());
+  console.log("Got data from kafka!");
 });
 
-consumer.on("disconnected", (arg)=> {
+consumer.on("disconnected", (arg) => {
   process.exit();
 });
-consumer.on('event.error', (err)=> {
+consumer.on("event.error", (err) => {
   console.error(err);
   process.exit(1);
 });
-consumer.on('event.log', function(log) {
+consumer.on("event.log", function (log) {
   console.log(log);
 });
 consumer.connect();

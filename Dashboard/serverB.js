@@ -16,76 +16,25 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 //**Init values in redis in 24:00 */
-redis.setExpiresTime();
+//redis.setExpiresTime();
 
 //-------------Socket.io-------------------------
 io.on("connection", async (socket) => {
-  //Get data from redis to dashboard
-  let allDataArray = await redis.getAllData();
-  //console.log(allDataArray);
-  let getAverageTime = await redis.getAverageTime();
-
-  //Move to dashboard - number of calls by topics & number of waiting & number of calls by cities
-  io.emit("allData", {
-    join: allDataArray[0],
-    service: allDataArray[1],
-    complaint: allDataArray[2],
-    leave: allDataArray[3],
-    waiting: allDataArray[4],
-    averageTotalTime: getAverageTime,
-    Jerusalem: allDataArray[5],
-    Nahariya: allDataArray[6],
-    Haifa: allDataArray[7],
-    Tel_Aviv: allDataArray[8],
-    Ashdod: allDataArray[9],
-    Ashkelon: allDataArray[10],
-    Beer_Sheva: allDataArray[11],
-  });
-
-  //Reset Info Manualiy
-  socket.on("resetDB", function () {
-    // reset redis
-    redis.initDB();
-  });
+  // Get redis flights (in case there is no record - an empty array is returned)
+  let redisFlights = await redis.getFlights();
+  // Update the dashboard directly with the returned flights data
+  io.emit("flights", redisFlights);
 });
 
 // ------------Consumer from Kafka-----------------
 kafka.consumer.on("data", async (msg) => {
-  //console.log("ffffffffffffffffffffff");
+  // Parse the input data (flights) to json
   const flights = JSON.parse(msg.value);
-  //const flights = msg.value;
-  console.log(flights);
-  // // **Store the data in Redis and after send to Dashboard */
-  // if(String(msg.value).length < 100) //Total wating calls
-  // {
-  //     redis.setTopic('TotalWaiting',parseInt(msg.value));
-  // }
-  // else if(String(msg.value).includes("topic")) // Details calls
-  // {
-
-  //   io.emit("New_Call", {
-  //     firstname: newCall.firstName,
-  //     lastname: newCall.lastName,
-  //     phone: newCall.phone,
-  //     topic: newCall.topic,
-  //     totaltime: newCall.totalTime,
-  //   });
-
+  // Update the dashboard directly with the flights data
   io.emit("flights", flights);
-
-  //   redis.setTopic(newCall.topic,0);
-  //   redis.setCity(newCall.city);
-  //   redis.setAverageTime(newCall.totalTime);
-  // }
-
-  // //Get data from redis to dashboard
-  // let allDataArray = await redis.getAllData();
-  // let getAverageTime = await redis.getAverageTime();
-
-  // //Send to front with socket
-  // io.emit('allData',
-  // {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
-  //      leave: allDataArray[3], waiting: allDataArray[4], averageTotalTime: getAverageTime});
+  // Store the current flights details with expire time (TTL) = 20 seconds
+  // (In a real-time system, the data becomes irrelevant after a certain time)
+  redis.setFlights(flights, 20);
 });
 
 //----------------Front Side - Daily Call Center ------------------
