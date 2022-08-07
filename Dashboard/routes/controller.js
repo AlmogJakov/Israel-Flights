@@ -9,4 +9,4 @@ router.get("/", (req, res) => {
 });
 
 // where style files will be
-router.use("/", express.static("./views/dashboard"));
+router.use("/", express.static("./views"));

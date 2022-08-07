@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-var db = require("../models/mysql");
+var mysql = require("../models/mysql");
 
 // auto format code: https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier
 
@@ -64,6 +64,7 @@ const produce = async () => {
         )
         .then(function (response) {
           // handle success
+          mysql.access_writing("flightradar24");
           data = response.data;
           kafka.publish(JSON.stringify(iterateFlights(data)));
         })

@@ -1,51 +1,48 @@
-const mysql = require('mysql');
-const {faker} = require("@faker-js/faker");
+const mysql = require("mysql");
 
 var connection = mysql.createConnection({
   //Properties
-  host: 'localhost',
-  user: 'root',
-  password: '123456',
-  database: 'big_data'
+  host: "localhost",
+  user: "root",
+  password: "123456",
+  database: "big_data",
 });
 
-
-//Function to create fake details person
-const randomPerson = () => {
-    let id = Math.floor(Math.random() * 1000000000);
-    let firstName = faker.name.firstName();
-    let lastName = faker.name.lastName();
-    let phone = faker.phone.phoneNumber();
-    let city = ['Jerusalem', 'Nahariya', 'Haifa', 'Tel-Aviv', 'Ashdod', 'Ashkelon', 'Beer-Sheva'];
-    const randomCity = city[Math.floor(Math.random() * city.length)];
-    let gender = ['Female','Male'];
-    let randomGender = gender[Math.floor(Math.random() * gender.length)];
-    let age = Math.floor(Math.random() * 100) + 18;
-
-    let person = {id,firstName,lastName,phone,randomCity,randomGender,age};
-    return person;
-}
-
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) {
-    console.error('error connecting: ' + err.stack);
+    console.error("error connecting: " + err.stack);
     return;
   }
-  console.log('connected as id ' + connection.threadId);
-
-    for (let i = 0; i < 5; i++) {
-        let person = randomPerson();
-        //Query of MySQL
-        var sql = `INSERT INTO users (id, first_name,last_name,phone,city,gender,age,prev_calls) 
-            VALUES (${person.id},'${person.firstName}','${person.lastName}','${person.phone}','${person.randomCity}','${person.randomGender}',${person.age},0);`;
-        //Insert row
-        connection.query(sql, function (err, result) {
-          if (err) throw err;
-          console.log(`${i+1} record inserted`);
-        });
-    }
+  console.log("connected as id " + connection.threadId);
 });
 
-  module.exports = connection;
+const mysqlConnection = {
+  access_writing: async function (data_type_name) {
+    // In case the table does not exist - create it (happens if the table is dropped).
+    var sql = `CREATE TABLE IF NOT EXISTS \`access_archive\` (
+      \`access_id\` int(11) NOT NULL auto_increment,
+      \`data_type\` varchar(100) NOT NULL default \'\',
+      \`date\` DATETIME NOT NULL,
+       PRIMARY KEY  (\`access_id\`)
+    );`;
+    connection.query(sql, function (err, result) {
+      if (err) throw err;
+    });
 
-  //truncate big_data.users; - Delete all rows from table
+    //current_date = new Date().toLocaleString();
+    //const isoDate = new Date(current_date);
+    //const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
+
+    // Get current date (in mysql format)
+    current_date = new Date().toISOString().slice(0, 19).replace("T", " ");
+    // Create the record and insert it to mysql
+    var sql = `INSERT INTO access_archive (data_type,date)
+               VALUES ('${data_type_name}','${current_date}');`;
+    connection.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(`MySQL Record inserted`);
+    });
+  },
+};
+
+module.exports = mysqlConnection;

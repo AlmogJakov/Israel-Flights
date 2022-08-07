@@ -1,33 +1,32 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-var server = require('http').createServer(app);
+var server = require("http").createServer(app);
 const io = require("socket.io")(server, {
-    allowEIO3: true // false by default
+  allowEIO3: true, // false by default
 });
 const kafka = require("./models/produceKafka");
-const controllerRouter = require('./routes/controller'); //controller
+const controllerRouter = require("./routes/controller"); //controller
 
-
-const bodyParser = require('body-parser');
-const path = require('path');
+const bodyParser = require("body-parser");
+const path = require("path");
 
 //----------------- Middleware -----------------
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static('./views/Calls_Table_Responsive'));
+//app.use(express.static("./views/Calls_Table_Responsive"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //----------------Front side ------------------
-app.use('/', controllerRouter);
+app.use("/", controllerRouter);
 
 // --- Socket.io - Produce call details to kafka ----------------
 //const summoner = require('./models/flights');
 io.on("connection", (socket) => {
-    console.log("new user connected");
-    //kafka.publish(summoner.accoutDetails)
-    socket.on("totalWaitingCalls", (msg) => { kafka.publish(msg) });
-    socket.on("callDetails", (msg) => { kafka.publish(msg) });
+  console.log("new user connected");
+  //kafka.publish(summoner.accoutDetails)
+  //socket.on("totalWaitingCalls", (msg) => { kafka.publish(msg) });
+  //socket.on("callDetails", (msg) => { kafka.publish(msg) });
 });
 
 // v1 = express.Router();
@@ -37,6 +36,6 @@ io.on("connection", (socket) => {
 
 const Port = process.env.PORT | 3000;
 //http://localhost:3000
-server.listen(Port, () => console.log(`Call Generator app listening at http://localhost:${Port}`));
-
-
+server.listen(Port, () =>
+  console.log(`Call Generator app listening at http://localhost:${Port}`)
+);

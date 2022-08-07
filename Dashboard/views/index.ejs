@@ -54,9 +54,10 @@
 				var rotationAngleRads = rotationAngle * Math.PI / 180;
 
 			   //Calculate rotated image size.
-				c.width = Math.abs(Math.ceil(img.width * Math.cos(rotationAngleRads) + img.height * Math.sin(rotationAngleRads)));
-				c.height = Math.abs(Math.ceil(img.width * Math.sin(rotationAngleRads) + img.height * Math.cos(rotationAngleRads)));
-
+				// c.width = Math.abs(Math.ceil(img.width * Math.cos(rotationAngleRads) + img.height * Math.sin(rotationAngleRads)));
+				// c.height = Math.abs(Math.ceil(img.width * Math.sin(rotationAngleRads) + img.height * Math.cos(rotationAngleRads)));
+                c.width = 45;
+				c.height = 45;
 				var context = c.getContext('2d');
 
 				//Move to the center of the canvas.
@@ -100,7 +101,7 @@
                 var coordinate_y = JSON.stringify(json[filghtID][0]['coordinate_y']);
                 var degree = JSON.stringify(json[filghtID][0]['degree']);
                 var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
-			    createRotatedImagePushpin(loc, 'https://i.ibb.co/K9YmQ75/airplane.png', degree, function (pin) {
+			    createRotatedImagePushpin(loc, 'airplane.png', degree, function (pin) {
 				    map.entities.push(pin);
 			    });
 
