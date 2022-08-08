@@ -4,6 +4,28 @@ const axios = require("axios");
 var router = require("../routes/controller");
 router = express.Router();
 
+// This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
+// Source: https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates
+function calcCrow(lat1, lon1, lat2, lon2) {
+  var R = 6371; // km
+  var dLat = toRad(lat2 - lat1);
+  var dLon = toRad(lon2 - lon1);
+  var lat1 = toRad(lat1);
+  var lat2 = toRad(lat2);
+
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  return d;
+}
+
+// Converts numeric degrees to radians
+function toRad(Value) {
+  return (Value * Math.PI) / 180;
+}
+
 function useNull() {
   return null;
 }
@@ -177,6 +199,32 @@ const flights_details = {
         console.log(
           `Misses estimated arrival time info of flight ${TLVkeys[i]}`
         );
+      }
+      // Assign flight duration type
+      try {
+        // TLVflights[TLVkeys[i]][0]["extended_info"]["estimated_arrival_time"] =
+        //   extended_info[i]["data"]["time"]["estimated"]["arrival"];
+        src_lat =
+          extended_info[i]["data"]["airport"]["origin"]["position"]["latitude"];
+        src_lon =
+          extended_info[i]["data"]["airport"]["origin"]["position"][
+            "longitude"
+          ];
+        dst_lat =
+          extended_info[i]["data"]["airport"]["destination"]["position"][
+            "latitude"
+          ];
+        dst_lon =
+          extended_info[i]["data"]["airport"]["destination"]["position"][
+            "longitude"
+          ];
+        distance = calcCrow(src_lat, src_lon, dst_lat, dst_lon);
+        duration_type =
+          distance <= 1500 ? "short" : distance <= 3500 ? "average" : "long";
+        TLVflights[TLVkeys[i]][0]["extended_info"]["flight_duration_type"] =
+          duration_type;
+      } catch (e) {
+        console.log(`Misses flight duration type of flight ${TLVkeys[i]}`);
       }
     }
     return TLVflights;
