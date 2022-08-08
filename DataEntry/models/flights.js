@@ -88,13 +88,11 @@ const flightsDetails = (req, res) => {
     .then(async function (response) {
       // handle success
       data = response.data;
-
-      //data = iterateFlights(data);
-
-      // get only TLV keys
+      // ------------- get basic info from flightradar24 -------------
       const json = JSON.parse(JSON.stringify(data));
       var keys = Object.keys(data);
       var TLVkeys = [];
+      var TLVflights = {};
       for (var i = 2; i < keys.length - 1; i++) {
         var filghtID = keys[i];
         var onGround = json[filghtID][14];
@@ -103,56 +101,86 @@ const flightsDetails = (req, res) => {
           json[filghtID][11] == "TLV"
         ) {
           TLVkeys.push(filghtID);
+          TLVflights[filghtID] = [];
+          var coordinateX = json[filghtID][1];
+          var coordinateY = json[filghtID][2];
+          var degree = json[filghtID][3];
+          var time = json[filghtID][10];
+          var src = json[filghtID][11];
+          var dst = json[filghtID][12];
+          var data = {
+            id: filghtID,
+            on_ground: onGround,
+            coordinate_x: coordinateX,
+            coordinate_y: coordinateY,
+            degree: degree,
+            time: time,
+            source: src,
+            destination: dst,
+            extended_info: {
+              // init extended information
+              period_type: null,
+              month: null,
+              day: null,
+              company: null,
+              src_country: null,
+              dst_country: null,
+              flight_duration_type: null,
+              src_country_weather: null,
+              dst_country_weather: null,
+              arrival_type: null,
+            },
+          };
+          TLVflights[filghtID].push(data);
         }
       }
-      //console.log(TLVkeys);
-
+      // ------------- get extended information from flightradar24 -------------
       let linksArr = [];
       for (const key of TLVkeys) {
         linksArr.push(
           `https://data-live.flightradar24.com/clickhandler/?version=1.5&flight=${key}`
         );
       }
-      //console.log(linksArr.length);
-      var dodo = [];
+      var extended_info;
       await axios
+        // If there is an access that failed - assign the specific record to null (by calling 'useNull')
         .all(linksArr.map((l) => axios.get(l).catch(useNull)))
         .then(
-          //(data) => console.log(data)
-          // function (response) {
-          //   (response) => console.log(response);
-          //   //return res.status(200).json(data[0]);
-          // }
-          //(data) => console.log(data[0])
-
           axios.spread(async function (...info) {
-            // all requests are now complete
-            //console.log(info.length);
-            //console.log(info);
-            //return info;
-            //return res.status(200).json(info.data);
-            dodo.push(info);
-            //dodo = info.data;
-            //dodo = structuredClone(info.data);
-            //res.status(200).json(info.data);
-            //console.log(keys);
+            //extended_info.push(info);
+            extended_info = info;
           })
         )
         .catch((err) => {
-          //console.log("FAIL", err);
-          console.log("FAIL");
+          console.log("FAIL", err); // TODO: should throw error
         });
-      //console.log(dodo[0][0]["data"]);
-      //console.log(JSON.stringify(dodo[0], replacerFunc())[0]);
-      return res.status(200).json(dodo[0][0]["data"]);
-      // console.log(dodo);
-      //return res.send(JSON.parse(dodo));
-      //console.log(dodo);
-      //return dodo;
+      //return res.status(200).json(extended_info[0]["data"]);
+      for (var i = 0; i < extended_info.length; i++) {
+        // if couldnt get extended info for specific flight then continue
+        if (extended_info[i] == null) continue;
+        // assign source country
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["src_country"] =
+            extended_info[i]["data"]["airport"]["origin"]["position"][
+              "country"
+            ]["name"];
+        } catch (e) {
+          console.log(`Misses destination country of flight ${TLVkeys[i]}`);
+        }
+        // assign destination country
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["dst_country"] =
+            extended_info[i]["data"]["airport"]["destination"]["position"][
+              "country"
+            ]["name"];
+        } catch (e) {
+          console.log(`Misses destination country of flight ${TLVkeys[i]}`);
+        }
+      }
+      return res.status(200).json(TLVflights);
     })
     .catch(function (error) {
-      // handle error
-      console.log(error);
+      console.log("Failed to get basic info from flightradar24", error);
     })
     .then(function () {
       // always executed
