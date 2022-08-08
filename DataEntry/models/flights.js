@@ -4,8 +4,6 @@ const axios = require("axios");
 var router = require("../routes/controller");
 router = express.Router();
 
-var data = {};
-
 // // Make a request for a user with a given ID
 // axios.get('https://data-cloud.flightradar24.com/zones/fcgi/feed.js?faa=1&bounds=41.449%2C21.623%2C16.457%2C53.063&satellite=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&estimated=1&maxage=14400&gliders=1&stats=1')
 //   .then(function (response) {
@@ -129,6 +127,14 @@ const flightsDetails = (req, res) => {
               src_country_weather: null,
               dst_country_weather: null,
               arrival_type: null,
+              status_live: null,
+              status_text: null,
+              scheduled_departure_time: null,
+              scheduled_arrival_time: null,
+              real_departure_time: null,
+              real_arrival_time: null,
+              estimated_departure_time: null,
+              estimated_arrival_time: null,
             },
           };
           TLVflights[filghtID].push(data);
@@ -155,10 +161,14 @@ const flightsDetails = (req, res) => {
           console.log("FAIL", err); // TODO: should throw error
         });
       //return res.status(200).json(extended_info[0]["data"]);
+
       for (var i = 0; i < extended_info.length; i++) {
-        // if couldnt get extended info for specific flight then continue
-        if (extended_info[i] == null) continue;
-        // assign source country
+        // If null then failed to get extended info for specific flight
+        if (extended_info[i] == null) {
+          console.log(`Couldn't receive extended data of flight ${TLVkeys[i]}`);
+          continue;
+        }
+        // Assign source country
         try {
           TLVflights[TLVkeys[i]][0]["extended_info"]["src_country"] =
             extended_info[i]["data"]["airport"]["origin"]["position"][
@@ -167,7 +177,7 @@ const flightsDetails = (req, res) => {
         } catch (e) {
           console.log(`Misses destination country of flight ${TLVkeys[i]}`);
         }
-        // assign destination country
+        // Assign destination country
         try {
           TLVflights[TLVkeys[i]][0]["extended_info"]["dst_country"] =
             extended_info[i]["data"]["airport"]["destination"]["position"][
@@ -175,6 +185,81 @@ const flightsDetails = (req, res) => {
             ]["name"];
         } catch (e) {
           console.log(`Misses destination country of flight ${TLVkeys[i]}`);
+        }
+        // Assign flight company
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["company"] =
+            extended_info[i]["data"]["airline"]["short"];
+        } catch (e) {
+          console.log(`Misses company info of flight ${TLVkeys[i]}`);
+        }
+        // Assign status live
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["status_live"] =
+            extended_info[i]["data"]["status"]["live"];
+        } catch (e) {
+          console.log(`Misses status live info of flight ${TLVkeys[i]}`);
+        }
+        // Assign status text
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["status_text"] =
+            extended_info[i]["data"]["status"]["text"];
+        } catch (e) {
+          console.log(`Misses status text info of flight ${TLVkeys[i]}`);
+        }
+        // Assign scheduled departure time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"][
+            "scheduled_departure_time"
+          ] = extended_info[i]["data"]["time"]["scheduled"]["departure"];
+        } catch (e) {
+          console.log(
+            `Misses scheduled departure time info of flight ${TLVkeys[i]}`
+          );
+        }
+        // Assign scheduled arrival time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["scheduled_arrival_time"] =
+            extended_info[i]["data"]["time"]["scheduled"]["arrival"];
+        } catch (e) {
+          console.log(
+            `Misses scheduled arrival time info of flight ${TLVkeys[i]}`
+          );
+        }
+        // Assign real departure time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["real_departure_time"] =
+            extended_info[i]["data"]["time"]["real"]["departure"];
+        } catch (e) {
+          console.log(
+            `Misses real departure time info of flight ${TLVkeys[i]}`
+          );
+        }
+        // Assign real arrival time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["real_arrival_time"] =
+            extended_info[i]["data"]["time"]["real"]["arrival"];
+        } catch (e) {
+          console.log(`Misses real arrival time info of flight ${TLVkeys[i]}`);
+        }
+        // Assign estimated departure time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"][
+            "estimated_departure_time"
+          ] = extended_info[i]["data"]["time"]["estimated"]["departure"];
+        } catch (e) {
+          console.log(
+            `Misses estimated departure time info of flight ${TLVkeys[i]}`
+          );
+        }
+        // Assign estimated arrival time
+        try {
+          TLVflights[TLVkeys[i]][0]["extended_info"]["estimated_arrival_time"] =
+            extended_info[i]["data"]["time"]["estimated"]["arrival"];
+        } catch (e) {
+          console.log(
+            `Misses estimated arrival time info of flight ${TLVkeys[i]}`
+          );
         }
       }
       return res.status(200).json(TLVflights);
