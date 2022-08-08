@@ -46,7 +46,7 @@
 		// source: https://github.com/microsoft/BingMapsV8CodeSamples/blob/main/Samples/Pushpins/Rotated%20Image/Pushpin%20Rotated%20Image.html
 		// source: https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-canvas-pushpin-example
 		// FIX: https://stackoverflow.com/questions/5820209/image-onload-event-not-working-in-chrome
-		function createRotatedImagePushpin(location, url, rotationAngle, callback) {
+		function createRotatedImagePushpin(location, url, rotationAngle, filghtID, callback) {
 			var img = new Image();
 			img.onload = function () {
 				var c = document.createElement('canvas');
@@ -72,6 +72,7 @@
 				var pin = new Microsoft.Maps.Pushpin(location, {
 					//Generate a base64 image URL from the canvas.
 					icon: c.toDataURL(),
+                    //title: filghtID,
 					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
 				});
 
@@ -89,6 +90,45 @@
         function add(flightsData)
         {
             //alert(flightsData);
+            //map.entities.clear();
+            //var json = JSON.parse(flightsData)
+            //var currFlights = Object.flights(json);
+             //var json = JSON.parse(data)
+            //const json = JSON.parse(JSON.stringify(database));
+            // alert(flights);
+            // var pushPins = FindVisualChildren<Pushpin>(map);
+            // foreach (pushPin in pushPins) {
+            //     //map.Children.Remove(pushPin);
+            // }
+            
+            // Update pushpin: https://social.msdn.microsoft.com/Forums/office/en-US/28a415e5-4278-42e6-bdf6-e3937ea1f053/how-do-i-update-the-position-of-an-existing-push-pin?forum=bingmaps
+            // Remove pushpin: https://stackoverflow.com/questions/9135950/bing-maps-api-remove-pins
+
+            // // remove old flights from current entities
+            // var i = 0, entity;
+            // while (i < map.entities.getLength()) {
+            //     entity = map.entities.get(i);
+            //     if (!currFlights.includes(entity.getTitle(), 0)) {
+            //         //alert(entity.getTitle());
+            //         map.entities.remove(entity);
+            //     }
+            //     i += 1;
+            // }
+            
+            // // add new flights to entities (need to fix)
+            // //alert(map.entities.get(2111));
+            // var i = 0, entity;
+            // while (i < currFlights.getLength()) {
+            //     entity = currFlights[i];
+            //     if (entity==null) {
+            //         //alert(entity.getTitle());
+            //         map.entities.remove(entity);
+            //     }
+            //     i += 1;
+            // }
+
+
+            
             map.entities.clear();
             var json = JSON.parse(flightsData)
             var keys = Object.keys(json);
@@ -101,17 +141,15 @@
                 var coordinate_y = JSON.stringify(json[filghtID][0]['coordinate_y']);
                 var degree = JSON.stringify(json[filghtID][0]['degree']);
                 var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
-			    createRotatedImagePushpin(loc, 'airplane.png', degree, function (pin) {
+			    createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
 				    map.entities.push(pin);
 			    });
-
                 // var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
                 //     pin4 = new Microsoft.Maps.Pushpin(loc4, {
                 //     icon: 'https://i.ibb.co/K9YmQ75/airplane.png',
                 //     anchor: new Microsoft.Maps.Point(10, 10)
                 // });
                 // map.entities.push(pin4);
-
                 //var coordinate_x = flightData[0];
                 //alert(coordinate_x);
             }
