@@ -159,7 +159,7 @@ const flights_details = {
             "name"
           ];
       } catch (e) {
-        console.log(`Misses destination country of flight ${TLVkeys[i]}`);
+        console.log(`Misses source country of flight ${TLVkeys[i]}`);
       }
       // Assign destination country
       try {
