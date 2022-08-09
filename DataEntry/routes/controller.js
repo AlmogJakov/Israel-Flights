@@ -12,6 +12,7 @@ const kafka = require("../models/produceKafka");
 // async function that writes a new message each second: https://www.sohamkamani.com/nodejs/working-with-kafka/
 const produce = async () => {
   var prev_keys = [];
+  let i = 0;
   // after the produce has connected, we start an interval timer
   setInterval(async () => {
     try {
@@ -42,9 +43,9 @@ const produce = async () => {
             extended_flights
           );
           // ------------- get extended information from flightradar24 -------------
-          // SHOULD UNCOMMENT THIS 2 LINES: (To actually produce to 'kafka')
-          extended_flights = await getFlights_details.get_details(json, keys);
+          // SHOULD UNCOMMENT THIS 3 LINES: (To actually produce to 'kafka' and write to MySQL)
           kafka.publish(JSON.stringify(extended_flights));
+          //mysql.access_writing("flightradar24");
         })
         .catch(function (error) {
           console.log("Failed to get basic info from flightradar24", error);
@@ -52,6 +53,8 @@ const produce = async () => {
         .then(function () {
           // always executed
         });
+      console.log("writes: ", i);
+      i++;
     } catch (err) {
       console.error("could not write message " + err);
     }
