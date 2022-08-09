@@ -23,12 +23,7 @@ const produce = async () => {
         .then(async function (response) {
           // handle success
           data = response.data;
-          // // ------------- get landed flights using prev flights -------------
-          // let landed_flights = prev_keys.filter((x) => !keys.includes(x));
-          // console.log(landed_flights);
-          // prev_flights = keys;
           // -------------- get basic flights info from flightradar24 --------------
-          const json = JSON.parse(JSON.stringify(data));
           //console.log(JSON.stringify(data));
           var keys = Object.keys(data);
           // remove 'stats'
@@ -37,15 +32,22 @@ const produce = async () => {
           delete data[keys[1]];
           // remove 'full_count'
           delete data[keys[0]];
+          // ------------ filter the data (keeping flights from/to TLV) ------------
+          var keys = Object.keys(data);
+          keys.forEach(function (key) {
+            if (data[key][11] != "TLV" && data[key][12] != "TLV")
+              delete data[key];
+          });
+          const json = JSON.parse(JSON.stringify(data));
+          var keys = Object.keys(data);
           // ------------- get extended information from flightradar24 -------------
+          // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
           extended_flights = await getFlights_details.get_details(json, keys);
           extended_flights = await getWeather_details.get_details(
             extended_flights
           );
-          // ------------- get extended information from flightradar24 -------------
-          // SHOULD UNCOMMENT THIS 3 LINES: (To actually produce to 'kafka' and write to MySQL)
           kafka.publish(JSON.stringify(extended_flights));
-          //mysql.access_writing("flightradar24");
+          mysql.access_writing("flightradar24");
         })
         .catch(function (error) {
           console.log("Failed to get basic info from flightradar24", error);

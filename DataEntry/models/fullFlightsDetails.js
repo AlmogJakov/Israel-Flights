@@ -69,10 +69,7 @@ const flights_details = {
     for (var i = 0; i < keys.length; i++) {
       var filghtID = keys[i];
       var onGround = json[filghtID][14];
-      if (
-        (onGround == "0" && json[filghtID][12] == "TLV") ||
-        json[filghtID][11] == "TLV"
-      ) {
+      if (onGround == "0") {
         TLVkeys.push(filghtID);
         TLVflights[filghtID] = [];
         var coordinateX = json[filghtID][1];

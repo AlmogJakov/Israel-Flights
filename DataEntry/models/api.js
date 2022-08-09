@@ -14,12 +14,7 @@ const flightsDetails = (req, res) => {
     .then(async function (response) {
       // handle success
       data = response.data;
-      // var TLVOnly = data.filter(function (entry) {
-      //   return entry[11] === "TLV" || entry[12] === "TLV";
-      // });
-      // console.log(TLVOnly);
       // -------------- get basic flights info from flightradar24 --------------
-      const json = JSON.parse(JSON.stringify(data));
       //console.log(JSON.stringify(data));
       var keys = Object.keys(data);
       // remove 'stats'
@@ -28,6 +23,13 @@ const flightsDetails = (req, res) => {
       delete data[keys[1]];
       // remove 'full_count'
       delete data[keys[0]];
+      // ------------ filter the data (keeping flights from/to TLV) ------------
+      var keys = Object.keys(data);
+      keys.forEach(function (key) {
+        if (data[key][11] != "TLV" && data[key][12] != "TLV") delete data[key];
+      });
+      const json = JSON.parse(JSON.stringify(data));
+      var keys = Object.keys(data);
       // ------------- get extended information from flightradar24 -------------
       extended_flights = await getFlights_details.get_details(json, keys);
       extended_flights = await getWeather_details.get_details(extended_flights);
