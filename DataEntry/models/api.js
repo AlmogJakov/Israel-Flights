@@ -3,6 +3,7 @@ var express = require("express");
 const axios = require("axios");
 var router = require("../routes/controller");
 var getFlights_details = require("./fullFlightsDetails");
+var getWeather_details = require("./weatherDetails");
 router = express.Router();
 
 const flightsDetails = (req, res) => {
@@ -13,15 +14,27 @@ const flightsDetails = (req, res) => {
     .then(async function (response) {
       // handle success
       data = response.data;
-      // ------------- get basic info from flightradar24 -------------
+      // var TLVOnly = data.filter(function (entry) {
+      //   return entry[11] === "TLV" || entry[12] === "TLV";
+      // });
+      // console.log(TLVOnly);
+      // -------------- get basic flights info from flightradar24 --------------
       const json = JSON.parse(JSON.stringify(data));
+      //console.log(JSON.stringify(data));
       var keys = Object.keys(data);
+      // remove 'stats'
+      delete data[keys[keys.length - 1]];
+      // remove 'version'
+      delete data[keys[1]];
+      // remove 'full_count'
+      delete data[keys[0]];
       // ------------- get extended information from flightradar24 -------------
-      TLVflights = await getFlights_details.get_details(json, keys);
-      return res.status(200).json(TLVflights);
+      extended_flights = await getFlights_details.get_details(json, keys);
+      extended_flights = await getWeather_details.get_details(extended_flights);
+      return res.status(200).json(extended_flights);
     })
     .catch(function (error) {
-      console.log("Failed to get basic info from flightradar24", error);
+      console.log("Failed to get info", error);
     })
     .then(function () {
       // always executed

@@ -31,7 +31,7 @@ kafka.consumer.on("data", async (msg) => {
   io.emit("flights", flights);
   // Store the current flights details with expire time (TTL) = 20 seconds
   // (In a real-time system, the data becomes irrelevant after a certain time)
-  redis.setFlights(flights, 20);
+  redis.setFlights(flights, 30);
 });
 
 //----------------Front Side - Daily Call Center ------------------
