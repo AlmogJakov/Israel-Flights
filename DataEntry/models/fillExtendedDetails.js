@@ -63,7 +63,7 @@ function useNull() {
 }
 
 const flights_details = {
-  get_details: async function (data) {
+  fill_details: async function (data) {
     const json = JSON.parse(JSON.stringify(data));
     var keys = Object.keys(data);
     var TLVkeys = [];
@@ -249,6 +249,8 @@ const flights_details = {
         if (flight_time == "null")
           flight_time =
             extended_info[i]["data"]["time"]["estimated"]["departure"];
+        if (flight_time == "null")
+          throw `Couldn't found departure time of flight ${TLVkeys[i]}`;
         var flight_date = getDate(flight_time);
         var month = monthNames[flight_date.getMonth()];
         var day = dayNames[flight_date.getDay()];

@@ -2,8 +2,9 @@ var express = require("express");
 //const config = require('../config');
 const axios = require("axios");
 var router = require("../routes/controller");
-var getFlights_details = require("./fillExtendedDetails");
-var getWeather_details = require("./fillWeatherDetails");
+var fill_flights_details = require("./fillExtendedDetails");
+var fill_weather_details = require("./fillWeatherDetails");
+var fill_period_details = require("./fillPeriodDetails");
 var getFlights = require("./getFlights");
 router = express.Router();
 
@@ -19,8 +20,13 @@ const flightsDetails = (req, res) => {
       // ----------- filter the basic flights info from flightradar24 ----------
       var flights = await getFlights.get_details(data);
       // ------------- get extended information from flightradar24 -------------
-      extended_flights = await getFlights_details.get_details(flights);
-      extended_flights = await getWeather_details.get_details(extended_flights);
+      extended_flights = await fill_flights_details.fill_details(flights);
+      extended_flights = await fill_weather_details.fill_details(
+        extended_flights
+      );
+      extended_flights = await fill_period_details.fill_details(
+        extended_flights
+      );
       return res.status(200).json(extended_flights);
     })
     .catch(function (error) {

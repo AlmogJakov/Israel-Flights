@@ -11,7 +11,7 @@ function useNull() {
 }
 
 const weather_details = {
-  get_details: async function (extended_flights) {
+  fill_details: async function (extended_flights) {
     // ------------- get weather information from openweathermap -------------
     var keys = Object.keys(extended_flights);
     let linksArr = [];

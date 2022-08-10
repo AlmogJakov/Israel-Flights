@@ -2,8 +2,9 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 var mysql = require("../models/mysql");
-var getFlights_details = require("../models/fillExtendedDetails");
-var getWeather_details = require("../models/fillWeatherDetails");
+var fill_flights_details = require("../models/fillExtendedDetails");
+var fill_weather_details = require("../models/fillWeatherDetails");
+var fill_period_details = require("../models/fillPeriodDetails");
 var getFlights = require("../models/getFlights");
 
 // auto format code: https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier
@@ -28,8 +29,11 @@ const produce = async () => {
           var flights = await getFlights.get_details(data);
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
-          extended_flights = await getFlights_details.get_details(flights);
-          extended_flights = await getWeather_details.get_details(
+          extended_flights = await fill_flights_details.fill_details(flights);
+          extended_flights = await fill_weather_details.fill_details(
+            extended_flights
+          );
+          extended_flights = await fill_period_details.fill_details(
             extended_flights
           );
           kafka.publish(JSON.stringify(extended_flights));
