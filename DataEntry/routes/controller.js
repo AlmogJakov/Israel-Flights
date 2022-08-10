@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 var mysql = require("../models/mysql");
-var fill_flights_details = require("../models/fillExtendedDetails");
+var fill_extended_details = require("../models/fillExtendedDetails");
 var fill_weather_details = require("../models/fillWeatherDetails");
 var fill_period_details = require("../models/fillPeriodDetails");
 var getFlights = require("../models/getFlights");
@@ -49,61 +49,20 @@ const produce = async () => {
           // handle success
           data = response.data;
           // ----------- filter the basic flights info from flightradar24 ----------
-          var flights = await getFlights.get_details(data);
-
-          // --------------------- get landed flights records ----------------------
-          /* 
-          The indication of a landed flight is if the flight has disappeared 
-          in the current sample (calculated using the Difference operation) 
-          and the flight actually took off (real_departure_time!=null)
-          */
-          var flights_keys = Object.keys(flights);
-          landed_flights = Object.fromEntries(
-            Object.entries(prev_flights).filter(
-              ([key]) =>
-                !flights_keys.includes(key) &&
-                prev_flights[key][0]["extended_info"]["real_departure_time"] !=
-                  "null"
-            )
-          );
-          console.log(
-            Object.fromEntries(
-              Object.entries(prev_flights).filter(
-                ([key]) => !flights_keys.includes(key)
-              )
-            )
-          );
-          // assign landed=true for each record in 'landed_flights' dictionary
-          for (let key in landed_flights) {
-            landed_flights[key][0]["landed"] = "true";
-          }
-
+          var curr_flights = await getFlights.get_relevant_flights(data);
+          landed_flights = await getFlights.get_landed_flights(prev_flights, curr_flights);
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
-          extended_flights = await fill_flights_details.fill_details(flights);
-          extended_flights = await fill_weather_details.fill_details(
-            extended_flights
-          );
-          extended_flights = await fill_period_details.fill_details(
-            extended_flights
-          );
-          // FOLLOWING 5 LINES JUST FOR TESTING!!!
-          console.log(
-            `prevSize: ${Object.keys(prev_flights).length}. curSize: ${
-              Object.keys(extended_flights).length
-            }`
-          );
-          ///////////////////////////////////////
+          extended_flights = await fill_extended_details.fill_details(curr_flights);
+          extended_flights = await fill_weather_details.fill_details(extended_flights);
+          extended_flights = await fill_period_details.fill_details(extended_flights);
           // assign the new extended records BEFORE merging with 'landed_flights'
           prev_flights = JSON.parse(JSON.stringify(extended_flights)); // deep copy (?)
           // merge the new extended records with updated 'landed_flights' records
-          extended_flights = Object.assign(
-            {},
-            extended_flights,
-            landed_flights
-          );
+          extended_flights = Object.assign({}, extended_flights, landed_flights);
           kafka.publish(JSON.stringify(extended_flights));
           mysql.access_writing("flightradar24");
+          console.log("");
 
           // FOLLOWING 4 LINES JUST FOR TESTING!!!
           if (Object.keys(landed_flights).length != 0) {

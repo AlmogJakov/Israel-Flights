@@ -14,8 +14,7 @@ function calcCrow(lat1, lon1, lat2, lon2) {
   var lat1 = toRad(lat1);
   var lat2 = toRad(lat2);
   var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c;
   return d;
@@ -42,15 +41,7 @@ const monthNames = [
   "December",
 ];
 
-const dayNames = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // Get date from timestamp
 function getDate(timestamp) {
@@ -89,7 +80,7 @@ const flights_details = {
           time: time,
           source: src,
           destination: dst,
-          landed: "false",
+          landed: false,
           extended_info: {
             // init extended information
             period_type: null,
@@ -122,9 +113,7 @@ const flights_details = {
     // ------------- get extended information from flightradar24 -------------
     let linksArr = [];
     for (const key of TLVkeys) {
-      linksArr.push(
-        `https://data-live.flightradar24.com/clickhandler/?version=1.5&flight=${key}`
-      );
+      linksArr.push(`https://data-live.flightradar24.com/clickhandler/?version=1.5&flight=${key}`);
     }
     var extended_info;
     await axios
@@ -146,48 +135,39 @@ const flights_details = {
       if (extended_info[i] == null) {
         console.log(
           // print in red color
-          "\u001b[31m" +
-            `Couldn't receive extended data of flight ${TLVkeys[i]}` +
-            "\u001b[0m"
+          "\u001b[31m" + `Couldn't receive extended data of flight ${TLVkeys[i]}` + "\u001b[0m"
         );
         continue;
       }
       // Assign source country
       try {
         TLVflights[TLVkeys[i]][0]["extended_info"]["src_country"] =
-          extended_info[i]["data"]["airport"]["origin"]["position"]["country"][
-            "name"
-          ];
+          extended_info[i]["data"]["airport"]["origin"]["position"]["country"]["name"];
       } catch (e) {
         console.log(`Misses source country of flight ${TLVkeys[i]}`);
       }
       // Assign destination country
       try {
         TLVflights[TLVkeys[i]][0]["extended_info"]["dst_country"] =
-          extended_info[i]["data"]["airport"]["destination"]["position"][
-            "country"
-          ]["name"];
+          extended_info[i]["data"]["airport"]["destination"]["position"]["country"]["name"];
       } catch (e) {
         console.log(`Misses destination country of flight ${TLVkeys[i]}`);
       }
       // Assign flight company
       try {
-        TLVflights[TLVkeys[i]][0]["extended_info"]["company"] =
-          extended_info[i]["data"]["airline"]["short"];
+        TLVflights[TLVkeys[i]][0]["extended_info"]["company"] = extended_info[i]["data"]["airline"]["short"];
       } catch (e) {
         console.log(`Misses company info of flight ${TLVkeys[i]}`);
       }
       // Assign status live
       try {
-        TLVflights[TLVkeys[i]][0]["extended_info"]["status_live"] =
-          extended_info[i]["data"]["status"]["live"];
+        TLVflights[TLVkeys[i]][0]["extended_info"]["status_live"] = extended_info[i]["data"]["status"]["live"];
       } catch (e) {
         console.log(`Misses status live info of flight ${TLVkeys[i]}`);
       }
       // Assign status text
       try {
-        TLVflights[TLVkeys[i]][0]["extended_info"]["status_text"] =
-          extended_info[i]["data"]["status"]["text"];
+        TLVflights[TLVkeys[i]][0]["extended_info"]["status_text"] = extended_info[i]["data"]["status"]["text"];
       } catch (e) {
         console.log(`Misses status text info of flight ${TLVkeys[i]}`);
       }
@@ -196,18 +176,14 @@ const flights_details = {
         TLVflights[TLVkeys[i]][0]["extended_info"]["scheduled_departure_time"] =
           extended_info[i]["data"]["time"]["scheduled"]["departure"];
       } catch (e) {
-        console.log(
-          `Misses scheduled departure time info of flight ${TLVkeys[i]}`
-        );
+        console.log(`Misses scheduled departure time info of flight ${TLVkeys[i]}`);
       }
       // Assign scheduled arrival time
       try {
         TLVflights[TLVkeys[i]][0]["extended_info"]["scheduled_arrival_time"] =
           extended_info[i]["data"]["time"]["scheduled"]["arrival"];
       } catch (e) {
-        console.log(
-          `Misses scheduled arrival time info of flight ${TLVkeys[i]}`
-        );
+        console.log(`Misses scheduled arrival time info of flight ${TLVkeys[i]}`);
       }
       // Assign real departure time
       try {
@@ -228,30 +204,21 @@ const flights_details = {
         TLVflights[TLVkeys[i]][0]["extended_info"]["estimated_departure_time"] =
           extended_info[i]["data"]["time"]["estimated"]["departure"];
       } catch (e) {
-        console.log(
-          `Misses estimated departure time info of flight ${TLVkeys[i]}`
-        );
+        console.log(`Misses estimated departure time info of flight ${TLVkeys[i]}`);
       }
       // Assign estimated arrival time
       try {
         TLVflights[TLVkeys[i]][0]["extended_info"]["estimated_arrival_time"] =
           extended_info[i]["data"]["time"]["estimated"]["arrival"];
       } catch (e) {
-        console.log(
-          `Misses estimated arrival time info of flight ${TLVkeys[i]}`
-        );
+        console.log(`Misses estimated arrival time info of flight ${TLVkeys[i]}`);
       }
       // Assign month and day of flight
       try {
         flight_time = extended_info[i]["data"]["time"]["real"]["departure"];
-        if (flight_time == "null")
-          flight_time =
-            extended_info[i]["data"]["time"]["scheduled"]["departure"];
-        if (flight_time == "null")
-          flight_time =
-            extended_info[i]["data"]["time"]["estimated"]["departure"];
-        if (flight_time == "null")
-          throw `Couldn't found departure time of flight ${TLVkeys[i]}`;
+        if (flight_time == "null") flight_time = extended_info[i]["data"]["time"]["scheduled"]["departure"];
+        if (flight_time == "null") flight_time = extended_info[i]["data"]["time"]["estimated"]["departure"];
+        if (flight_time == "null") throw `Couldn't found departure time of flight ${TLVkeys[i]}`;
         var flight_date = getDate(flight_time);
         var month = monthNames[flight_date.getMonth()];
         var day = dayNames[flight_date.getDay()];
@@ -264,39 +231,21 @@ const flights_details = {
       // Assign flight duration type via airports latitude/longitude
       try {
         // get latitude/longitude of src and dst airports
-        src_lat =
-          extended_info[i]["data"]["airport"]["origin"]["position"]["latitude"];
-        src_lon =
-          extended_info[i]["data"]["airport"]["origin"]["position"][
-            "longitude"
-          ];
-        dst_lat =
-          extended_info[i]["data"]["airport"]["destination"]["position"][
-            "latitude"
-          ];
-        dst_lon =
-          extended_info[i]["data"]["airport"]["destination"]["position"][
-            "longitude"
-          ];
+        src_lat = extended_info[i]["data"]["airport"]["origin"]["position"]["latitude"];
+        src_lon = extended_info[i]["data"]["airport"]["origin"]["position"]["longitude"];
+        dst_lat = extended_info[i]["data"]["airport"]["destination"]["position"]["latitude"];
+        dst_lon = extended_info[i]["data"]["airport"]["destination"]["position"]["longitude"];
         // assign latitude/longitude of src and dst airports
-        TLVflights[TLVkeys[i]][0]["extended_info"]["src_airport_latitude"] =
-          src_lat;
-        TLVflights[TLVkeys[i]][0]["extended_info"]["src_airport_longitude"] =
-          src_lon;
-        TLVflights[TLVkeys[i]][0]["extended_info"]["dst_airport_latitude"] =
-          dst_lat;
-        TLVflights[TLVkeys[i]][0]["extended_info"]["dst_airport_longitude"] =
-          dst_lon;
+        TLVflights[TLVkeys[i]][0]["extended_info"]["src_airport_latitude"] = src_lat;
+        TLVflights[TLVkeys[i]][0]["extended_info"]["src_airport_longitude"] = src_lon;
+        TLVflights[TLVkeys[i]][0]["extended_info"]["dst_airport_latitude"] = dst_lat;
+        TLVflights[TLVkeys[i]][0]["extended_info"]["dst_airport_longitude"] = dst_lon;
         // calc and assign the flight duration type
         distance = calcCrow(src_lat, src_lon, dst_lat, dst_lon);
-        duration_type =
-          distance <= 1500 ? "short" : distance <= 3500 ? "average" : "long";
-        TLVflights[TLVkeys[i]][0]["extended_info"]["flight_duration_type"] =
-          duration_type;
+        duration_type = distance <= 1500 ? "short" : distance <= 3500 ? "average" : "long";
+        TLVflights[TLVkeys[i]][0]["extended_info"]["flight_duration_type"] = duration_type;
       } catch (e) {
-        console.log(
-          `Misses flight duration type (via airports latitude/longitude) of flight ${TLVkeys[i]}`
-        );
+        console.log(`Misses flight duration type (via airports latitude/longitude) of flight ${TLVkeys[i]}`);
       }
     }
     return TLVflights;

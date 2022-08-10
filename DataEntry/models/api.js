@@ -18,15 +18,12 @@ const flightsDetails = (req, res) => {
       // handle success
       data = response.data;
       // ----------- filter the basic flights info from flightradar24 ----------
-      var flights = await getFlights.get_details(data);
+      var curr_flights = await getFlights.get_relevant_flights(data);
       // ------------- get extended information from flightradar24 -------------
-      extended_flights = await fill_flights_details.fill_details(flights);
-      extended_flights = await fill_weather_details.fill_details(
-        extended_flights
-      );
-      extended_flights = await fill_period_details.fill_details(
-        extended_flights
-      );
+      // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
+      extended_flights = await fill_flights_details.fill_details(curr_flights);
+      extended_flights = await fill_weather_details.fill_details(extended_flights);
+      extended_flights = await fill_period_details.fill_details(extended_flights);
       return res.status(200).json(extended_flights);
     })
     .catch(function (error) {
