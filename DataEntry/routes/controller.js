@@ -73,7 +73,6 @@ const produce = async () => {
           extended_flights = await fill_period_details.fill_details(
             extended_flights
           );
-          kafka.publish(JSON.stringify(extended_flights));
           // FOLLOWING 5 LINES JUST FOR TESTING!!!
           console.log(
             `prevSize: ${Object.keys(prev_flights).length}. curSize: ${
@@ -85,6 +84,7 @@ const produce = async () => {
           prev_flights = JSON.parse(JSON.stringify(extended_flights)); // deep copy (?)
           // merge the new extended records with updated 'difference' records
           extended_flights = Object.assign({}, extended_flights, difference);
+          kafka.publish(JSON.stringify(extended_flights));
           mysql.access_writing("flightradar24");
 
           // FOLLOWING 4 LINES JUST FOR TESTING!!!
