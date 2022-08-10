@@ -47,16 +47,14 @@ const produce = async () => {
           var flights = await getFlights.get_details(data);
 
           // Example of Difference operation between 2 dictionaries
-          // source: https://masteringjs.io/tutorials/fundamentals/filter-key
-          // https://medium.com/@alvaro.saburido/set-theory-for-arrays-in-es6-eb2f20a61848
           arrA = { firstName: "Jean-Luc", one: "Picard" };
           arrB = { firstName: "Jean-Luc", two: "Picard" };
           var arrB_keys = Object.keys(arrB);
-          res = Object.fromEntries(
+          difference = Object.fromEntries(
             Object.entries(arrA).filter(([key]) => !arrB_keys.includes(key))
           );
           // merge the new flights records with the landed flights records
-          var merged = Object.assign({}, res, arrB);
+          var merged = Object.assign({}, arrB, res);
           console.log(merged);
 
           prev_flights = flights;
