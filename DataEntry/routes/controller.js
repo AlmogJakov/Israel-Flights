@@ -31,11 +31,6 @@ var logger = log4js.getLogger("fileLog");
 const kafka = require("../models/produceKafka");
 // async function that writes a new message each second: https://www.sohamkamani.com/nodejs/working-with-kafka/
 const produce = async () => {
-  /*
-  It seems that it takes a while for a flight to be updated 
-  as 'landed' even though it has already landed! 
-  Therefore, we will save the last record that we were able to capture in real time
-  */
   var prev_flights = {};
   let i = 0;
   // after the produce has connected, we start an interval timer
@@ -64,12 +59,12 @@ const produce = async () => {
           mysql.access_writing("flightradar24");
           console.log("");
 
-          // FOLLOWING 4 LINES JUST FOR TESTING!!!
-          if (Object.keys(landed_flights).length != 0) {
-            await logger.debug(JSON.stringify(extended_flights));
-            return process.exit(1);
-          }
-          ///////////////////////////////////////
+          // // FOLLOWING 4 LINES JUST FOR TESTING THE LANDED FLIGHTS CAPTURE!!!
+          // if (Object.keys(landed_flights).length != 0) {
+          //   await logger.debug(JSON.stringify(extended_flights));
+          //   return process.exit(1);
+          // }
+          // ///////////////////////////////////////
         })
         .catch(function (error) {
           console.log("Failed to get basic info from flightradar24", error);
@@ -86,7 +81,7 @@ const produce = async () => {
   // First, call the produce function immediately
   await produce_func();
   // Call the produce function every 20 seconds
-  setInterval(await produce_func, 20000);
+  setInterval(await produce_func, 20000); // TODO: fix overlapping produces
 };
 produce();
 

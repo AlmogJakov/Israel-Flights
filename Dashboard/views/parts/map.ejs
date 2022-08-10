@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!--
+    https://www.bingmapsportal.com/Application#    
+    https://www.bing.com/api/maps/sdk/mapcontrol/isdk/loadmapasync#JS
+    https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-image-pushpin-example    
+    https://www.bigdatacloud.com/geocoding-apis
+-->
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- Reference to the Bing Maps SDK -->
+    <script type='text/javascript'
+        src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
+        async defer>
+    </script>
+    <!--
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="text/javascript">
+    //let socket;
+        var map = null;
+        function setMap() {
+            socket = io.connect();
+            socket.on('flights', function (msg) {
+                add(msg);
+            });
+            // alert("connected");
+            // map styles: https://docs.microsoft.com/en-us/bingmaps/articles/custom-map-styles-in-bing-maps
+            var myStyle = {
+                "version": "1.0",
+                "settings": {
+                    "landColor": "#0B334D"
+                },
+                "elements": {
+                    "mapElement": {
+                        "labelColor": "#FFFFFF",
+                        "labelOutlineColor": "#000000"
+                    },
+                    "political": {
+                        "borderStrokeColor": "#144B53",
+                        "borderOutlineColor": "#00000000"
+                    },
+                    "point": {
+                        "iconColor": "#0C4152",
+                        "fillColor": "#000000",
+                        "strokeColor": "#0C4152"
+                    },
+                    "transportation": {
+                        "strokeColor": "#000000",
+                        "fillColor": "#000000"
+                    },
+                    "highway": {
+                        "strokeColor": "#158399",
+                        "fillColor": "#000000"
+                    },
+                    "controlledAccessHighway": {
+                        "strokeColor": "#158399",
+                        "fillColor": "#000000"
+                    },
+                    "arterialRoad": {
+                        "strokeColor": "#157399",
+                        "fillColor": "#000000"
+                    },
+                    "majorRoad": {
+                        "strokeColor": "#157399",
+                        "fillColor": "#000000"
+                    },
+                    "railway": {
+                        "strokeColor": "#146474",
+                        "fillColor": "#000000"
+                    },
+                    "structure": {
+                        "fillColor": "#115166"
+                    },
+                    "water": {
+                        "fillColor": "#021019"
+                    },
+                    "area": {
+                        "fillColor": "#115166"
+                    }
+                }
+            };
+            // Initialize the map - USE YOUR OWN KEY !
+            map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk", customMapStyle: myStyle});
+			map.setView({
+            //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            center: new Microsoft.Maps.Location(33.027222, 32.0225),
+            zoom: 6
+        });
+        }
+    </script>
+
+    <script type='text/javascript'>
+		// rotation
+		// source: https://social.msdn.microsoft.com/Forums/sqlserver/en-US/02de6b85-ee3d-4780-a4fd-3b944f0fc1b4/rotate-custom-image-pushpin?forum=bingmapsajax
+		// source: https://www.anycodings.com/1questions/5317334/how-to-rotate-pushpin-image-in-bing-map#:~:text=https%3A//bingmapsv8samples.azurewebsites.net/%23Pushpin_RotatedImage
+		// source: https://github.com/microsoft/BingMapsV8CodeSamples/blob/main/Samples/Pushpins/Rotated%20Image/Pushpin%20Rotated%20Image.html
+		// source: https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-canvas-pushpin-example
+		// FIX: https://stackoverflow.com/questions/5820209/image-onload-event-not-working-in-chrome
+		function createRotatedImagePushpin(location, url, rotationAngle, filghtID, callback) {
+			var img = new Image();
+			img.onload = function () {
+				var c = document.createElement('canvas');
+
+				var rotationAngleRads = rotationAngle * Math.PI / 180;
+
+			   //Calculate rotated image size.
+				// c.width = Math.abs(Math.ceil(img.width * Math.cos(rotationAngleRads) + img.height * Math.sin(rotationAngleRads)));
+				// c.height = Math.abs(Math.ceil(img.width * Math.sin(rotationAngleRads) + img.height * Math.cos(rotationAngleRads)));
+                c.width = 45;
+				c.height = 45;
+				var context = c.getContext('2d');
+
+				//Move to the center of the canvas.
+				context.translate(c.width / 2, c.height / 2);
+
+				//Rotate the canvas to the specified angle in degrees.
+				context.rotate(rotationAngleRads);
+
+				//Draw the image, since the context is rotated, the image will be rotated also.
+				context.drawImage(img, -img.width / 2, -img.height / 2);
+
+				var pin = new Microsoft.Maps.Pushpin(location, {
+					//Generate a base64 image URL from the canvas.
+					icon: c.toDataURL(),
+                    //title: filghtID,
+					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
+				});
+
+				if (callback) {
+					callback(pin);
+				}
+			};
+
+			//Allow cross domain image editting.
+			img.crossOrigin = 'anonymous';
+			img.src = url;
+		}
+		// end rotation
+		
+        function add(flightsData)
+        {
+            //alert(flightsData);
+            //map.entities.clear();
+            //var json = JSON.parse(flightsData)
+            //var currFlights = Object.flights(json);
+             //var json = JSON.parse(data)
+            //const json = JSON.parse(JSON.stringify(database));
+            // alert(flights);
+            // var pushPins = FindVisualChildren<Pushpin>(map);
+            // foreach (pushPin in pushPins) {
+            //     //map.Children.Remove(pushPin);
+            // }
+            
+            // Update pushpin: https://social.msdn.microsoft.com/Forums/office/en-US/28a415e5-4278-42e6-bdf6-e3937ea1f053/how-do-i-update-the-position-of-an-existing-push-pin?forum=bingmaps
+            // Remove pushpin: https://stackoverflow.com/questions/9135950/bing-maps-api-remove-pins
+
+            // // remove old flights from current entities
+            // var i = 0, entity;
+            // while (i < map.entities.getLength()) {
+            //     entity = map.entities.get(i);
+            //     if (!currFlights.includes(entity.getTitle(), 0)) {
+            //         //alert(entity.getTitle());
+            //         map.entities.remove(entity);
+            //     }
+            //     i += 1;
+            // }
+            
+            // // add new flights to entities (need to fix)
+            // //alert(map.entities.get(2111));
+            // var i = 0, entity;
+            // while (i < currFlights.getLength()) {
+            //     entity = currFlights[i];
+            //     if (entity==null) {
+            //         //alert(entity.getTitle());
+            //         map.entities.remove(entity);
+            //     }
+            //     i += 1;
+            // }
+
+
+            
+            map.entities.clear();
+            var json = JSON.parse(flightsData)
+            var keys = Object.keys(json);
+             //var json = JSON.parse(data)
+            //const json = JSON.parse(JSON.stringify(database));
+            // alert(keys);
+            for (var i = 0; i < keys.length; i++) {
+                var filghtID = keys[i];
+                var coordinate_x = JSON.stringify(json[filghtID][0]['coordinate_x']);
+                var coordinate_y = JSON.stringify(json[filghtID][0]['coordinate_y']);
+                var degree = JSON.stringify(json[filghtID][0]['degree']);
+                var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
+			    createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
+				    map.entities.push(pin);
+			    });
+                // var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
+                //     pin4 = new Microsoft.Maps.Pushpin(loc4, {
+                //     icon: 'https://i.ibb.co/K9YmQ75/airplane.png',
+                //     anchor: new Microsoft.Maps.Point(10, 10)
+                // });
+                // map.entities.push(pin4);
+                //var coordinate_x = flightData[0];
+                //alert(coordinate_x);
+            }
+            
+			
+			//setTimeout(function(){
+			//	map.entities.clear();
+			//}, 1000);
+			//delay(5000).then(() => map.entities.clear());
+        }
+        function move() {
+            for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+                var pushpin = map.entities.get(i);
+                if (pushpin instanceof Microsoft.Maps.Pushpin) {
+                    map.entities.removeAt(i);
+                }
+            }
+        }       
+       
+		
+		
+    </script>
+
+    <script>
+        //let socket;
+
+        //function initSocket() {
+        //socket is global
+        //socket = io.connect();
+        //alert("connected");
+        //socket = io.connect();
+        //socket.on('flights', function (msg) {
+        //    console.log("ffff");
+        //    add();
+        //});
+        //}<body onload="initSocket()"></body>
+    </script>
+    
+</head>
+
+<body onload="setMap()">
+    <div id="myMap" style="position:relative;width:1000px;height:600px;"></div>
+    <input type="button" onclick="add()" value="הוסף אייקונים" />
+    <input type="button" onclick="move()" value="הסר אייקונים" />
+</body>
+</body>
+
+
+</html>

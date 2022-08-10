@@ -6,5 +6,5 @@ router.get("/", (req, res) => {
   res.render("index");
 });
 
-// where style files will be
-router.use("/", express.static("./views"));
+// Include static files (styles, images etc)
+router.use("/", express.static("./views/static"));
