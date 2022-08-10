@@ -7,16 +7,34 @@ var fill_weather_details = require("../models/fillWeatherDetails");
 var fill_period_details = require("../models/fillPeriodDetails");
 var getFlights = require("../models/getFlights");
 
+// ------------------------------------ Log to file -------------------------------------
+// source: https://stackoverflow.com/questions/41232578/node-js-console-log-in-txt-file
+var log4js = require("log4js");
+log4js.configure({
+  appenders: {
+    fileLog: { type: "file", filename: "logs/mylog.log" },
+    console: { type: "console" },
+  },
+  categories: {
+    file: { appenders: ["fileLog"], level: "error" },
+    another: { appenders: ["console"], level: "trace" },
+    default: { appenders: ["console", "fileLog"], level: "trace" },
+  },
+});
+var logger = log4js.getLogger("fileLog");
+//logger.debug("Cheese is not a food.");
+// ---------------------------------- END Log to file -----------------------------------
+
 // auto format code: https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier
 
 // ----------------- Produce flights -----------------
 const kafka = require("../models/produceKafka");
 // async function that writes a new message each second: https://www.sohamkamani.com/nodejs/working-with-kafka/
 const produce = async () => {
-  var prev_keys = [];
+  var prev_flights = {};
   let i = 0;
   // after the produce has connected, we start an interval timer
-  setInterval(async () => {
+  produce_func = async () => {
     try {
       await axios
         .get(
@@ -27,17 +45,32 @@ const produce = async () => {
           data = response.data;
           // ----------- filter the basic flights info from flightradar24 ----------
           var flights = await getFlights.get_details(data);
+
+          // Example of Difference operation between 2 dictionaries
+          // source: https://masteringjs.io/tutorials/fundamentals/filter-key
+          // https://medium.com/@alvaro.saburido/set-theory-for-arrays-in-es6-eb2f20a61848
+          arrA = { firstName: "Jean-Luc", one: "Picard" };
+          arrB = { firstName: "Jean-Luc", two: "Picard" };
+          var arrB_keys = Object.keys(arrB);
+          res = Object.fromEntries(
+            Object.entries(arrA).filter(([key]) => !arrB_keys.includes(key))
+          );
+          // merge the new flights records with the landed flights records
+          var merged = Object.assign({}, res, arrB);
+          console.log(merged);
+
+          prev_flights = flights;
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
-          extended_flights = await fill_flights_details.fill_details(flights);
-          extended_flights = await fill_weather_details.fill_details(
-            extended_flights
-          );
-          extended_flights = await fill_period_details.fill_details(
-            extended_flights
-          );
-          kafka.publish(JSON.stringify(extended_flights));
-          mysql.access_writing("flightradar24");
+          // extended_flights = await fill_flights_details.fill_details(flights);
+          // extended_flights = await fill_weather_details.fill_details(
+          //   extended_flights
+          // );
+          // extended_flights = await fill_period_details.fill_details(
+          //   extended_flights
+          // );
+          // kafka.publish(JSON.stringify(extended_flights));
+          // mysql.access_writing("flightradar24");
         })
         .catch(function (error) {
           console.log("Failed to get basic info from flightradar24", error);
@@ -50,7 +83,11 @@ const produce = async () => {
     } catch (err) {
       console.error("could not write message " + err);
     }
-  }, 20000); // wait 20 seconds between each sample
+  };
+  // First, call the produce function immediately
+  produce_func();
+  // Call the produce function every 20 seconds
+  setInterval(produce_func, 20000);
 };
 produce();
 
