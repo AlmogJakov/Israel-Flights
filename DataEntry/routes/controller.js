@@ -31,6 +31,11 @@ var logger = log4js.getLogger("fileLog");
 const kafka = require("../models/produceKafka");
 // async function that writes a new message each second: https://www.sohamkamani.com/nodejs/working-with-kafka/
 const produce = async () => {
+  /*
+  It seems that it takes a while for a flight to be updated 
+  as 'landed' even though it has already landed! 
+  Therefore, we will save the last record that we were able to capture in real time
+  */
   var prev_flights = {};
   let i = 0;
   // after the produce has connected, we start an interval timer
@@ -69,14 +74,21 @@ const produce = async () => {
             extended_flights
           );
           kafka.publish(JSON.stringify(extended_flights));
+          // FOLLOWING 5 LINES JUST FOR TESTING!!!
+          console.log(
+            `prevSize: ${Object.keys(prev_flights).length}. curSize: ${
+              Object.keys(extended_flights).length
+            }`
+          );
+          ///////////////////////////////////////
           // assign the new extended records BEFORE merging with 'difference'
-          prev_flights = extended_flights;
+          prev_flights = JSON.parse(JSON.stringify(extended_flights)); // deep copy (?)
           // merge the new extended records with updated 'difference' records
           extended_flights = Object.assign({}, extended_flights, difference);
           mysql.access_writing("flightradar24");
 
           // FOLLOWING 4 LINES JUST FOR TESTING!!!
-          if (!Object.keys(difference).length === 0) {
+          if (Object.keys(difference).length != 0) {
             await logger.debug(extended_flights);
             return process.exit(1);
           }
@@ -95,9 +107,9 @@ const produce = async () => {
     }
   };
   // First, call the produce function immediately
-  produce_func();
+  await produce_func();
   // Call the produce function every 20 seconds
-  setInterval(produce_func, 20000);
+  setInterval(await produce_func, 20000);
 };
 produce();
 
