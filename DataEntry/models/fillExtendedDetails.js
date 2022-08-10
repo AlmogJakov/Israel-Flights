@@ -89,6 +89,7 @@ const flights_details = {
           time: time,
           source: src,
           destination: dst,
+          landed: "false",
           extended_info: {
             // init extended information
             period_type: null,

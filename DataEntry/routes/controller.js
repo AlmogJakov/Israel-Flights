@@ -46,42 +46,41 @@ const produce = async () => {
           // ----------- filter the basic flights info from flightradar24 ----------
           var flights = await getFlights.get_details(data);
 
-          // ------- Example of Difference operation between 2 dictionaries -------
-          arr_old = {
-            cff61bd: [{ id: "Jean-Luc", landed: false }],
-            aff61bd: [{ id: "Jean-Luc", landed: false }],
-          };
-          arr_new = {
-            cff61bd: [{ id: "Jean-Lucc", landed: false }],
-            bff61bd: [{ id: "Jean-Luc", landed: false }],
-          };
+          // ----- get Difference between current and previous records (laned flights) -----
           // get difference by key (key example: key=cff61bd)
-          var arr_new_keys = Object.keys(arr_new);
+          var flights_keys = Object.keys(flights);
           difference = Object.fromEntries(
-            Object.entries(arr_old).filter(
-              ([key]) => !arr_new_keys.includes(key)
+            Object.entries(prev_flights).filter(
+              ([key]) => !flights_keys.includes(key)
             )
           );
           // assign landed=true for each record in 'difference' dictionary
           for (let key in difference) {
             difference[key][0]["landed"] = true;
           }
-          // merge new flight record with the updated difference records
-          var merged = Object.assign({}, arr_new, difference);
-          console.log(merged);
-          // ----- END Example of Difference operation between 2 dictionaries -----
 
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
-          // extended_flights = await fill_flights_details.fill_details(flights);
-          // extended_flights = await fill_weather_details.fill_details(
-          //   extended_flights
-          // );
-          // extended_flights = await fill_period_details.fill_details(
-          //   extended_flights
-          // );
-          // kafka.publish(JSON.stringify(extended_flights));
-          // mysql.access_writing("flightradar24");
+          extended_flights = await fill_flights_details.fill_details(flights);
+          extended_flights = await fill_weather_details.fill_details(
+            extended_flights
+          );
+          extended_flights = await fill_period_details.fill_details(
+            extended_flights
+          );
+          kafka.publish(JSON.stringify(extended_flights));
+          // assign the new extended records BEFORE merging with 'difference'
+          prev_flights = extended_flights;
+          // merge the new extended records with updated 'difference' records
+          extended_flights = Object.assign({}, extended_flights, difference);
+          mysql.access_writing("flightradar24");
+
+          // FOLLOWING 4 LINES JUST FOR TESTING!!!
+          if (!Object.keys(difference).length === 0) {
+            await logger.debug(extended_flights);
+            return process.exit(1);
+          }
+          ///////////////////////////////////////
         })
         .catch(function (error) {
           console.log("Failed to get basic info from flightradar24", error);
