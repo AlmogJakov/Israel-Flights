@@ -51,17 +51,31 @@ const produce = async () => {
           // ----------- filter the basic flights info from flightradar24 ----------
           var flights = await getFlights.get_details(data);
 
-          // ----- get Difference between current and previous records (laned flights) -----
-          // get difference by key (key example: key=cff61bd)
+          // --------------------- get landed flights records ----------------------
+          /* 
+          The indication of a landed flight is if the flight has disappeared 
+          in the current sample (calculated using the Difference operation) 
+          and the flight actually took off (real_departure_time!=null)
+          */
           var flights_keys = Object.keys(flights);
-          difference = Object.fromEntries(
+          landed_flights = Object.fromEntries(
             Object.entries(prev_flights).filter(
-              ([key]) => !flights_keys.includes(key)
+              ([key]) =>
+                !flights_keys.includes(key) &&
+                prev_flights[key][0]["extended_info"]["real_departure_time"] !=
+                  "null"
             )
           );
-          // assign landed=true for each record in 'difference' dictionary
-          for (let key in difference) {
-            difference[key][0]["landed"] = true;
+          console.log(
+            Object.fromEntries(
+              Object.entries(prev_flights).filter(
+                ([key]) => !flights_keys.includes(key)
+              )
+            )
+          );
+          // assign landed=true for each record in 'landed_flights' dictionary
+          for (let key in landed_flights) {
+            landed_flights[key][0]["landed"] = "true";
           }
 
           // ------------- get extended information from flightradar24 -------------
@@ -80,16 +94,20 @@ const produce = async () => {
             }`
           );
           ///////////////////////////////////////
-          // assign the new extended records BEFORE merging with 'difference'
+          // assign the new extended records BEFORE merging with 'landed_flights'
           prev_flights = JSON.parse(JSON.stringify(extended_flights)); // deep copy (?)
-          // merge the new extended records with updated 'difference' records
-          extended_flights = Object.assign({}, extended_flights, difference);
+          // merge the new extended records with updated 'landed_flights' records
+          extended_flights = Object.assign(
+            {},
+            extended_flights,
+            landed_flights
+          );
           kafka.publish(JSON.stringify(extended_flights));
           mysql.access_writing("flightradar24");
 
           // FOLLOWING 4 LINES JUST FOR TESTING!!!
-          if (Object.keys(difference).length != 0) {
-            await logger.debug(extended_flights);
+          if (Object.keys(landed_flights).length != 0) {
+            await logger.debug(JSON.stringify(extended_flights));
             return process.exit(1);
           }
           ///////////////////////////////////////
