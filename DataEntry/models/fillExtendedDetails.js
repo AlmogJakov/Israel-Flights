@@ -63,7 +63,9 @@ function useNull() {
 }
 
 const flights_details = {
-  get_details: async function (json, keys) {
+  get_details: async function (data) {
+    const json = JSON.parse(JSON.stringify(data));
+    var keys = Object.keys(data);
     var TLVkeys = [];
     var TLVflights = {};
     for (var i = 0; i < keys.length; i++) {

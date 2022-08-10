@@ -2,8 +2,9 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 var mysql = require("../models/mysql");
-var getFlights_details = require("../models/fullFlightsDetails");
-var getWeather_details = require("../models/weatherDetails");
+var getFlights_details = require("../models/fillExtendedDetails");
+var getWeather_details = require("../models/fillWeatherDetails");
+var getFlights = require("../models/getFlights");
 
 // auto format code: https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier
 
@@ -23,26 +24,11 @@ const produce = async () => {
         .then(async function (response) {
           // handle success
           data = response.data;
-          // -------------- get basic flights info from flightradar24 --------------
-          //console.log(JSON.stringify(data));
-          var keys = Object.keys(data);
-          // remove 'stats'
-          delete data[keys[keys.length - 1]];
-          // remove 'version'
-          delete data[keys[1]];
-          // remove 'full_count'
-          delete data[keys[0]];
-          // ------------ filter the data (keeping flights from/to TLV) ------------
-          var keys = Object.keys(data);
-          keys.forEach(function (key) {
-            if (data[key][11] != "TLV" && data[key][12] != "TLV")
-              delete data[key];
-          });
-          const json = JSON.parse(JSON.stringify(data));
-          var keys = Object.keys(data);
+          // ----------- filter the basic flights info from flightradar24 ----------
+          var flights = await getFlights.get_details(data);
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
-          extended_flights = await getFlights_details.get_details(json, keys);
+          extended_flights = await getFlights_details.get_details(flights);
           extended_flights = await getWeather_details.get_details(
             extended_flights
           );
