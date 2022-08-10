@@ -62,53 +62,51 @@ const flights_details = {
     for (var i = 0; i < keys.length; i++) {
       var filghtID = keys[i];
       var onGround = json[filghtID][14];
-      if (onGround == "0") {
-        TLVkeys.push(filghtID);
-        TLVflights[filghtID] = [];
-        var coordinateX = json[filghtID][1];
-        var coordinateY = json[filghtID][2];
-        var degree = json[filghtID][3];
-        var time = json[filghtID][10];
-        var src = json[filghtID][11];
-        var dst = json[filghtID][12];
-        var data = {
-          id: filghtID,
-          on_ground: onGround,
-          coordinate_x: coordinateX,
-          coordinate_y: coordinateY,
-          degree: degree,
-          time: time,
-          source: src,
-          destination: dst,
-          landed: false,
-          extended_info: {
-            // init extended information
-            period_type: null,
-            month: null,
-            day: null,
-            company: null,
-            src_country: null,
-            dst_country: null,
-            flight_duration_type: null,
-            src_airport_latitude: null,
-            src_airport_longitude: null,
-            dst_airport_latitude: null,
-            dst_airport_longitude: null,
-            src_country_weather: null,
-            dst_country_weather: null,
-            //arrival_type: null,
-            status_live: null,
-            status_text: null,
-            scheduled_departure_time: null,
-            scheduled_arrival_time: null,
-            real_departure_time: null,
-            real_arrival_time: null,
-            estimated_departure_time: null,
-            estimated_arrival_time: null,
-          },
-        };
-        TLVflights[filghtID].push(data);
-      }
+      TLVkeys.push(filghtID);
+      TLVflights[filghtID] = [];
+      var coordinateX = json[filghtID][1];
+      var coordinateY = json[filghtID][2];
+      var degree = json[filghtID][3];
+      var time = json[filghtID][10];
+      var src = json[filghtID][11];
+      var dst = json[filghtID][12];
+      var data = {
+        id: filghtID,
+        on_ground: onGround,
+        coordinate_x: coordinateX,
+        coordinate_y: coordinateY,
+        degree: degree,
+        time: time,
+        source: src,
+        destination: dst,
+        landed: false,
+        extended_info: {
+          // init extended information
+          period_type: null,
+          month: null,
+          day: null,
+          company: null,
+          src_country: null,
+          dst_country: null,
+          flight_duration_type: null,
+          src_airport_latitude: null,
+          src_airport_longitude: null,
+          dst_airport_latitude: null,
+          dst_airport_longitude: null,
+          src_country_weather: null,
+          dst_country_weather: null,
+          //arrival_type: null,
+          status_live: null,
+          status_text: null,
+          scheduled_departure_time: null,
+          scheduled_arrival_time: null,
+          real_departure_time: null,
+          real_arrival_time: null,
+          estimated_departure_time: null,
+          estimated_arrival_time: null,
+        },
+      };
+      TLVflights[filghtID].push(data);
     }
     // ------------- get extended information from flightradar24 -------------
     let linksArr = [];
