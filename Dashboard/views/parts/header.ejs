@@ -1,20 +1,27 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <body>
-        <h1>"Hey"</h1>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script type="text/javascript">
-        //let socket;
-        socket = io.connect();
-        socket.on('flights', (msg) => {
-            document.querySelector('h1').innerHTML = Object.keys(JSON.parse(msg))
-        });
-    </script>
-    </body>
+<table style="display: table-cell; vertical-align: middle;">
+    <h1>Welcome!</h1>
+    <table style="position:relative;margin-left: auto;margin-right: auto;">
+        <th>
+            <a href="#" class="btn" style="width:420px;margin-left: auto;margin-right: auto;">
+                Flights waiting to take off:&nbsp;<span><b>N/A</b></span>
+            </a> 
+        </th>
+        <th>
+            &nbsp;&nbsp;
+        </th>
+        <th>
+            <a href="#" class="btn" style="width:400px;margin-left: auto;margin-right: auto;">
+                Flights waiting to land:&nbsp;<span><b>N/A</b></span>
+            </a> 
+        </th>
+    </table>
     
-</head>
-
-</html>
+    
+    <script type="text/javascript">
+    //let socket;
+    socket = io.connect();
+    socket.on('flights', (msg) => {
+        //document.querySelector('h1').innerHTML = Object.keys(JSON.parse(msg))
+    });
+    </script>
+</table>
