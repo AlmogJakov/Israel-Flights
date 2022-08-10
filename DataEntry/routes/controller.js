@@ -46,18 +46,31 @@ const produce = async () => {
           // ----------- filter the basic flights info from flightradar24 ----------
           var flights = await getFlights.get_details(data);
 
-          // Example of Difference operation between 2 dictionaries
-          arrA = { firstName: "Jean-Luc", one: "Picard" };
-          arrB = { firstName: "Jean-Luc", two: "Picard" };
-          var arrB_keys = Object.keys(arrB);
+          // ------- Example of Difference operation between 2 dictionaries -------
+          arr_old = {
+            cff61bd: [{ id: "Jean-Luc", landed: false }],
+            aff61bd: [{ id: "Jean-Luc", landed: false }],
+          };
+          arr_new = {
+            cff61bd: [{ id: "Jean-Lucc", landed: false }],
+            bff61bd: [{ id: "Jean-Luc", landed: false }],
+          };
+          // get difference by key (key example: key=cff61bd)
+          var arr_new_keys = Object.keys(arr_new);
           difference = Object.fromEntries(
-            Object.entries(arrA).filter(([key]) => !arrB_keys.includes(key))
+            Object.entries(arr_old).filter(
+              ([key]) => !arr_new_keys.includes(key)
+            )
           );
-          // merge the new flights records with the landed flights records
-          var merged = Object.assign({}, arrB, res);
+          // assign landed=true for each record in 'difference' dictionary
+          for (let key in difference) {
+            difference[key][0]["landed"] = true;
+          }
+          // merge new flight record with the updated difference records
+          var merged = Object.assign({}, arr_new, difference);
           console.log(merged);
+          // ----- END Example of Difference operation between 2 dictionaries -----
 
-          prev_flights = flights;
           // ------------- get extended information from flightradar24 -------------
           // SHOULD UNCOMMENT THE FOLLOWING LINES: (To actually produce to 'kafka' and write to MySQL)
           // extended_flights = await fill_flights_details.fill_details(flights);
