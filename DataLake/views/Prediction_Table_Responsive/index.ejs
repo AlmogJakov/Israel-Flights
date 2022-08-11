@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Prediction Table</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<!--===============================================================================================-->
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script type='text/javascript'>
+	
+        //socket is global
+        const socket = io.connect();
+        
+        function initSocket() {
+
+            socket.on('Model', function (msg) { 
+                alert(msg);
+            });
+
+        }
+
+        function train() {
+            socket.emit('Train', "msg");
+        }
+    
+        function predict(value) {
+            socket.emit('Predict', value);
+        }
+
+        
+    </script>
+	<!--===============================================================================================-->
+</head>
+
+<body>
+	<h1>Topic Prediction</h1>
+	<img src="./images/bigMllogo.png" width="250" height="200" alt="bigml" class="pic">
+
+	<!--===============================================================================================-->
+	<body onload="initSocket()">
+
+		  <div class="d-grid gap-2 d-md-block text-center">
+			<button class="model btn btn-success" type="button" onclick="train()">Create a new model</button>
+			<button class="predict btn btn-success" type="button" onclick="predict()">Predict</button>
+		  </div>
+		  <br>
+		  <h2 class="text-center text-white">Last incoming call:</h2>
+		  
+		<script type='text/javascript'>
+            socket.on('NewCall', function (msg) {
+
+				document.getElementById("column2").innerHTML = msg.firstname;
+				document.getElementById("column3").innerHTML = msg.lastname;
+				document.getElementById("column4").innerHTML = msg.phone;
+				document.getElementById("column5").innerHTML = msg.city;
+				document.getElementById("column6").innerHTML = msg.gender;
+				document.getElementById("column7").innerHTML = msg.age;
+				document.getElementById("column8").innerHTML = msg.prevcalls;
+				document.getElementById("topic").innerHTML = "???";
+
+                // document.getElementById('call').innerHTML = 
+                // 'Current call: First Name: ' + msg.firstname + ' | Last Name: ' + msg.lastname + ' | Phone: '+ msg.phone
+                // + ' | City: ' + msg.city + ' | Gender: ' + msg.gender + ' | Age: '+ msg.age + ' | Previus calls: ' + msg.prevcalls;
+            });
+
+            socket.on('Prediction', function (msg) {
+				let topics = ['Join','Service', 'Complaint','Leave'];
+				document.getElementById("topic").innerHTML = topics[Math.floor(Math.random() * topics.length)];
+            });
+
+        </script>
+    </body>
+	<!--===============================================================================================-->
+	
+	<br>
+	<div class="limiter">
+	
+			<div class="wrap-table100">
+
+				<div class="table100">
+					<table>
+						<thead>
+							<tr class="table100-head">
+								<th class="column2">First Name</th>
+								<th class="column3">Last Name</th>
+								<th class="column4">Phone</th>
+								<th class="column5">City</th>
+								<th class="column6">Gender</th>
+								<th class="column7">Age</th>
+								<th class="column8">Prev calls</th>
+								<th class="column9">Topic</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="column2" id="column2">-</th>
+								<th class="column3" id="column3">-</th>
+								<th class="column4" id="column4">-</th>
+								<th class="column5" id="column5">-</th>
+								<th class="column6" id="column6">-</th>
+								<th class="column7" id="column7">-</th>
+								<th class="column8" id="column8">-</th>
+								<th class="column9-data" id="topic">???</th>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		
+	</div>
+
+		<!--===============================================================================================-->
+		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/bootstrap/js/popper.js"></script>
+		<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/select2/select2.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="js/main.js"></script>
+
+</body>
+
+</html>

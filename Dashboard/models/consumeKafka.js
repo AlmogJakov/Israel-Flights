@@ -6,19 +6,34 @@ const Kafka = require("node-rdkafka");
 const kafkaConf = {
   "group.id": "cloudkarafka-example",
   "metadata.broker.list":
-    "sulky-01.srvs.cloudkafka.com:9094,sulky-02.srvs.cloudkafka.com:9094,sulky-03.srvs.cloudkafka.com:9094".split(
-      ","
-    ),
+    "moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094".split(","),
   "socket.keepalive.enable": true,
   "security.protocol": "SASL_SSL",
   "sasl.mechanisms": "SCRAM-SHA-256",
-  "sasl.username": "v28g6ayh",
-  "sasl.password": "5d-hix-_k78Sc0mmRS-oqbeang-9si4q",
+  "sasl.username": "d83qvhnu",
+  "sasl.password": "5d7EURoRC6AWET9dOFGwLdBCqYIWdEMq",
   debug: "generic,broker,security",
 };
 
-const prefix = "v28g6ayh-";
+const prefix = "d83qvhnu-";
 const topic = `${prefix}default`;
+
+// ------------------------------------
+
+// const kafkaConf = {
+//   "group.id": "cloudkarafka-example",
+//   "metadata.broker.list":
+//     "sulky-01.srvs.cloudkafka.com:9094,sulky-02.srvs.cloudkafka.com:9094,sulky-03.srvs.cloudkafka.com:9094".split(","),
+//   "socket.keepalive.enable": true,
+//   "security.protocol": "SASL_SSL",
+//   "sasl.mechanisms": "SCRAM-SHA-256",
+//   "sasl.username": "v28g6ayh",
+//   "sasl.password": "5d-hix-_k78Sc0mmRS-oqbeang-9si4q",
+//   debug: "generic,broker,security",
+// };
+
+// const prefix = "v28g6ayh-";
+// const topic = `${prefix}default`;
 
 // ------------------------------------
 

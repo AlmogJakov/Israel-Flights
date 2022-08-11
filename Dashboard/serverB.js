@@ -4,7 +4,7 @@ var server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   allowEIO3: true, // false by default
 });
-const kafka = require("./models/comsumeKafka");
+const kafka = require("./models/consumeKafka");
 const redis = require("./models/redisDB");
 const controllerRouter = require("./routes/controller"); //controller
 const path = require("path");
@@ -42,6 +42,4 @@ app.use("/", controllerRouter);
 
 const Port = process.env.PORT || 3001;
 //http://localhost:3001
-server.listen(Port, () =>
-  console.log(`Server B is listening at http://localhost:${Port}`)
-);
+server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));

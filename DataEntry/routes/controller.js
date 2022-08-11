@@ -55,6 +55,7 @@ const produce = async () => {
           prev_flights = JSON.parse(JSON.stringify(extended_flights)); // deep copy (?)
           // merge the new extended records with updated 'landed_flights' records
           extended_flights = Object.assign({}, extended_flights, landed_flights);
+
           kafka.publish(JSON.stringify(extended_flights));
           mysql.access_writing("flightradar24");
           console.log("");
