@@ -23,6 +23,7 @@ app.use(express.json());
 kafka.consumer.on("data", (msg) => {
   // Parse the input data (flights) to json
   mongodb.saveFlightsDetails(JSON.parse(msg.value));
+  // mongodb.export2csv();
 });
 
 //----------------Front side ------------------

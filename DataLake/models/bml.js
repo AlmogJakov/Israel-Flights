@@ -2,7 +2,8 @@ var bigml = require("bigml");
 var fs = require("fs");
 var mongodb = require("./MongoDB/mongodb");
 
-//var connection = new bigml.BigML("username", "password");
+var connection = new bigml.BigML("LIORATIYA", "32c48e9131baa4930cb24d5f094a0e6b12d7de01");
+// var connection = new bigml.BigML('OFIRRR999','bce5e228c27e09db2e07949f5943d097f110c368')
 
 var source = new bigml.Source(connection);
 
@@ -33,9 +34,9 @@ const BigML = {
 
     return "Model created!";
   },
+  // BigML assumes that the parameter we want to predict is the last one
   predict: async function (toPredict) {
     var prediction = new bigml.Prediction(connection);
-
     console.log("========== WHAT PREDICT: " + toPredict);
     fs.readFile("model.txt", "utf8", function (err, data) {
       prediction.create(data, toPredict, function (error, prediction) {

@@ -25,6 +25,7 @@ const MongoDB = {
         if (diff < 15) arrival_time_type = "Normal";
         else if (diff <= 60) arrival_time_type = "Delay";
         else arrival_time_type = "Heavy Delay";
+        // TODO: dont save records with null field value !
         const flight = new flightsCollection({
           flightID: key,
           periodType: data[key][0]["extended_info"]["period_type"],
@@ -66,27 +67,47 @@ const MongoDB = {
     //   .then(() => console.log("Inserted to MongoDB"))
     //   .catch((err) => console.log(err));
   },
-  // export2csv: async function () {
-  //   flightsCollection
-  //     .find({}, { _id: 0 })
-  //     .lean()
-  //     .exec((err, data) => {
-  //       if (err) throw err;
-  //       const csvFields = [
-  //         "id",
-  //         "topic",
-  //       ];
-  //       console.log(csvFields);
-  //       const json2csvParser = new Json2csvParser({
-  //         csvFields,
-  //       });
-  //       const csvData = json2csvParser.parse(data);
-  //       fs.writeFile("flightDetails.csv", csvData, function (error) {
-  //         if (error) throw error;
-  //         console.log("Write to flightDetails.csv successfully!");
-  //       });
-  //     });
-  // },
+  export2csv: async function () {
+    //flightsCollection;
+    // .find({}, { _id: 0 })
+    flightsCollection
+      .find({
+        createdAt: {
+          // Month parameter start from 0!
+          // Therefore, for example, the august indicator is 7 (and not 8)
+          $gte: new Date(2022, 7, 11), // From this day (Including this day)
+          $lt: new Date(2022, 7, 12), // Until this day (but NOT including this day)
+        },
+      })
+      .lean()
+      .select("-_id -createdAt -updatedAt")
+      .exec((err, data) => {
+        // if (err) throw err;
+        //console.log(data);
+
+        const csvFields = [
+          "flightID",
+          "periodType",
+          "month",
+          "day",
+          "company",
+          "srcCountry",
+          "dstCountry",
+          "flightDurationType",
+          "srcCountryWeather",
+          "dstCountryWeather",
+          "arrivalTimeType",
+        ];
+        const json2csvParser = new Json2csvParser({
+          csvFields,
+        });
+        const csvData = json2csvParser.parse(data, csvFields);
+        fs.writeFile("flightDetails.csv", csvData, function (error) {
+          if (error) throw error;
+          console.log("Write to flightDetails.csv successfully!");
+        });
+      });
+  },
 };
 
 module.exports = MongoDB;
