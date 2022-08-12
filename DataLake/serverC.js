@@ -7,6 +7,7 @@ const io = require("socket.io")(server, {
 var fs = require("fs");
 //const BigML = require('./models/bml');
 const mongodb = require("./models/MongoDB/mongodb");
+const bigML = require("./models/bml");
 const kafka = require("./models/consumeKafka");
 
 const controllerRouter = require("./routes/controller"); //controller
@@ -23,7 +24,8 @@ app.use(express.json());
 kafka.consumer.on("data", (msg) => {
   // Parse the input data (flights) to json
   // mongodb.saveFlightsDetails(JSON.parse(msg.value));
-  mongodb.export2csv();
+  //mongodb.export2csv();
+  bigML.createModel();
 });
 
 //----------------Front side ------------------
