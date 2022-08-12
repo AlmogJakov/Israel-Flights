@@ -2,7 +2,10 @@ var bigml = require("bigml");
 var fs = require("fs");
 var mongodb = require("./MongoDB/mongodb");
 
-var connection = new bigml.BigML("LIORATIYA", "32c48e9131baa4930cb24d5f094a0e6b12d7de01");
+// https://bigml.com/dashboard/datasets
+
+var connection = new bigml.BigML("almog1006", "4c50b7ad4f22a8a4e3bc6c23623d299f466ce991");
+// var connection = new bigml.BigML("LIORATIYA", "32c48e9131baa4930cb24d5f094a0e6b12d7de01");
 // var connection = new bigml.BigML('OFIRRR999','bce5e228c27e09db2e07949f5943d097f110c368')
 
 var source = new bigml.Source(connection);
@@ -34,7 +37,7 @@ const BigML = {
 
     return "Model created!";
   },
-  // BigML assumes that the parameter we want to predict is the last one
+  // BigML assumes that the parameter we want to predict is in the last column
   predict: async function (toPredict) {
     var prediction = new bigml.Prediction(connection);
     console.log("========== WHAT PREDICT: " + toPredict);

@@ -22,8 +22,8 @@ app.use(express.json());
 // get data from kafka to store (and predict later)
 kafka.consumer.on("data", (msg) => {
   // Parse the input data (flights) to json
-  mongodb.saveFlightsDetails(JSON.parse(msg.value));
-  // mongodb.export2csv();
+  // mongodb.saveFlightsDetails(JSON.parse(msg.value));
+  mongodb.export2csv();
 });
 
 //----------------Front side ------------------
