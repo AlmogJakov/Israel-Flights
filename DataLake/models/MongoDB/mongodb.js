@@ -25,7 +25,9 @@ const MongoDB = {
         if (diff < 15) arrival_time_type = "Normal";
         else if (diff <= 60) arrival_time_type = "Delay";
         else arrival_time_type = "Heavy Delay";
-        // TODO: dont save records with null field value !
+        // Note! There are problems when there is a missing field in the record stored in mongoDB
+        // Therefore, dont save records with null field value (maybe the reason for the field's disappearance)
+        // or maybe check the size of the record fields before storing in mongoDB
         const flight = new flightsCollection({
           flightID: key,
           periodType: data[key][0]["extended_info"]["period_type"],

@@ -25,7 +25,30 @@ kafka.consumer.on("data", (msg) => {
   // Parse the input data (flights) to json
   // mongodb.saveFlightsDetails(JSON.parse(msg.value));
   //mongodb.export2csv();
-  bigML.createModel();
+  //bigML.createModel();
+  // console.log(keys);
+  // console.log(JSON.stringify(JSON.parse(msg.value)[keys[0]]));
+
+  var json = JSON.parse(JSON.parse(msg.value));
+  var keys = Object.keys(json);
+  key = keys[0];
+  keys.forEach(function (key) {
+    f = {
+      flightID: key,
+      periodType: json[key][0]["extended_info"]["period_type"],
+      month: json[key][0]["extended_info"]["month"],
+      day: json[key][0]["extended_info"]["day"],
+      company: json[key][0]["extended_info"]["company"],
+      srcCountry: json[key][0]["extended_info"]["src_country"],
+      dstCountry: json[key][0]["extended_info"]["dst_country"],
+      flightDurationType: json[key][0]["extended_info"]["flight_duration_type"],
+      srcCountryWeather: json[key][0]["extended_info"]["src_country_weather"],
+      dstCountryWeather: json[key][0]["extended_info"]["dst_country_weather"],
+      arrivalTimeType: 0,
+    };
+    // console.log(f);
+    bigML.predict(f);
+  });
 });
 
 //----------------Front side ------------------
