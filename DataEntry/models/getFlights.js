@@ -16,7 +16,7 @@ const flights = {
     // ---------- filter the data (keeping flights only from/to TLV) ----------
     var keys = Object.keys(data);
     keys.forEach(function (key) {
-      if ((data[key][11] != "TLV" && data[key][12] != "TLV") || data[key][14] != "0") delete data[key];
+      if (data[key][11] != "TLV" && data[key][12] != "TLV") delete data[key]; // || data[key][14] != "0"
     });
     return data;
   },

@@ -1,0 +1,59 @@
+<!-- Source: https://sabe.io/tutorials/how-to-create-modal-popup-box -->
+
+<!-- ---------------------------- First Modal ---------------------------- -->
+<!-- <button class="trigger">Click here to trigger the modal!</button> -->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h1>Hello, I am the first modal!</h1>
+    </div>
+</div>
+</div>
+<script>
+    const modal = document.querySelector(".modal");
+    const trigger = document.querySelector("#first_button");
+    const closeButton = document.querySelector(".close-button");
+
+    function toggleModal() {
+        modal.classList.toggle("show-modal");
+    }
+
+    function windowOnClick(event) {
+        if (event.target === modal) {
+            toggleModal();
+        }
+    }
+
+    trigger.addEventListener("click", toggleModal);
+    closeButton.addEventListener("click", toggleModal);
+    window.addEventListener("click", windowOnClick);
+</script>
+
+<br>
+<!-- ---------------------------- Second Modal ---------------------------- -->
+<!-- <button class="trigger">Click here to trigger the modal!</button> -->
+<div class="modal" id="second_modal">
+    <div class="modal-content">
+        <span class="close-button" id = "second-close-button">&times;</span>
+        <h1>Hello, I am the second modal!</h1>
+    </div>
+</div>
+<script>
+    const secondModal = document.querySelector("#second_modal");
+    // const trigger = document.querySelector(".trigger");
+    const secondTrigger = document.querySelector("#second_button");
+    const secondCloseButton = document.querySelector("#second-close-button");
+    function secondToggleModal() {
+        secondModal.classList.toggle("show-modal");
+    }
+    function secondWindowOnClick(event) {
+        if (event.target === secondModal) {
+            secondToggleModal();
+        }
+    }
+    secondTrigger.addEventListener("click", secondToggleModal);
+    secondCloseButton.addEventListener("click", secondToggleModal);
+    window.addEventListener("click", secondWindowOnClick);
+</script>
+
+<!-- --------------------------------------------------------------- -->

@@ -1,12 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
+router.get("/", (req, res) => {
+  //(URL || Path , Call back function)
+  res.render("index");
+});
 
-router.get('/', (req,res) => { //(URL || Path , Call back function)
-     res.render('Prediction_Table_Responsive/index');
- });
-
- router.use('/',express.static('./views/Prediction_Table_Responsive'));
-
+router.use("/", express.static("./views/static"));
 
 module.exports = router;

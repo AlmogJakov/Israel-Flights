@@ -21,8 +21,8 @@ const kafkaConf = {
 const prefix = "d83qvhnu-";
 const topic = `${prefix}default`;
 
-const prefix2 = "d83qvhnu-";
-const topic2 = `${prefix2}new`;
+// const prefix2 = "d83qvhnu-";
+// const topic2 = `${prefix2}new`;
 
 // ------------------------------------
 
@@ -59,5 +59,5 @@ module.exports.publish = function (msg) {
   m = JSON.stringify(msg);
   // SHOULD UNCOMMENT THIS LINE
   producer.produce(topic, -1, genMessage(m), uuid.v4());
-  producer.produce(topic2, -1, genMessage(m), uuid.v4());
+  // producer.produce(topic2, -1, genMessage(m), uuid.v4());
 };

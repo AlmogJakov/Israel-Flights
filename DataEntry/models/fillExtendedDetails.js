@@ -136,6 +136,14 @@ const flights_details = {
           "\u001b[31m" + `Couldn't receive extended data of flight ${TLVkeys[i]}` + "\u001b[0m"
         );
         continue;
+      } else if (
+        // Inactive flight indication
+        extended_info[i]["data"]["time"]["real"]["departure"] == null &&
+        extended_info[i]["data"]["time"]["scheduled"]["departure"] == null &&
+        extended_info[i]["data"]["time"]["estimated"]["departure"] == null
+      ) {
+        console.log(`Flight ${TLVkeys[i]} may be inactive. skipping...`);
+        continue;
       }
       // Assign source country
       try {

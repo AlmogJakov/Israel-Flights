@@ -4,6 +4,7 @@ const flightsCollection = require("./schema");
 
 // https://cloud.mongodb.com/v2/62f4d5a92511ff28eacbc5f9#metrics/replicaSet/62f4d74129b9e928619293a1/explorer/big-data/flightdetails/find
 
+// Finding the time difference in minutes given 2 timestamps
 function diff_minutes(dt2, dt1) {
   var diff = (dt2.getTime() - dt1.getTime()) / 1000;
   diff /= 60;
@@ -65,37 +66,27 @@ const MongoDB = {
     //   .then(() => console.log("Inserted to MongoDB"))
     //   .catch((err) => console.log(err));
   },
-  export2csv: async function () {
-    flightsCollection
-      .find({}, { _id: 0 })
-      .lean()
-      .exec((err, data) => {
-        if (err) throw err;
-        const csvFields = [
-          "id",
-          "firstName",
-          "lastName",
-          "phone",
-          "city",
-          "gender",
-          "age",
-          "prevCalls",
-          "totalTime",
-          "product",
-          "period",
-          "topic",
-        ];
-        console.log(csvFields);
-        const json2csvParser = new Json2csvParser({
-          csvFields,
-        });
-        const csvData = json2csvParser.parse(data);
-        fs.writeFile("flightDetails.csv", csvData, function (error) {
-          if (error) throw error;
-          console.log("Write to flightDetails.csv successfully!");
-        });
-      });
-  },
+  // export2csv: async function () {
+  //   flightsCollection
+  //     .find({}, { _id: 0 })
+  //     .lean()
+  //     .exec((err, data) => {
+  //       if (err) throw err;
+  //       const csvFields = [
+  //         "id",
+  //         "topic",
+  //       ];
+  //       console.log(csvFields);
+  //       const json2csvParser = new Json2csvParser({
+  //         csvFields,
+  //       });
+  //       const csvData = json2csvParser.parse(data);
+  //       fs.writeFile("flightDetails.csv", csvData, function (error) {
+  //         if (error) throw error;
+  //         console.log("Write to flightDetails.csv successfully!");
+  //       });
+  //     });
+  // },
 };
 
 module.exports = MongoDB;
