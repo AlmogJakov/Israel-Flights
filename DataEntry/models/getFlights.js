@@ -24,10 +24,10 @@ const flights = {
   get_landed_flights: async function (prev_flights, curr_flights) {
     // --------------------- get landed flights records ----------------------
     /* 
-          The indication of a landed flight is if the flight has disappeared 
-          in the current sample (calculated using the Difference operation) 
-          and the flight actually took off (real_departure_time!=null)
-          */
+      The indication of a landed flight:
+        1. if the flight has disappeared in the current sample (calculated using the Difference operation) 
+        2. the flight actually took off (real_departure_time!=null)
+    */
     var curr_flights_keys = Object.keys(curr_flights);
     landed_flights = Object.fromEntries(
       Object.entries(prev_flights).filter(

@@ -27,15 +27,7 @@ const events = [
   //"Purim Katan",
 ];
 
-const summer_vacations = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+const summer_vacations = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // -------------- Return null --------------
 function useNull() {
@@ -51,14 +43,9 @@ const period_details = {
     var keys = Object.keys(extended_flights);
     let linksArr = [];
     for (const key of keys) {
-      flight_time =
-        extended_flights[key][0]["extended_info"]["real_departure_time"];
-      if (flight_time == "null")
-        flight_time =
-          extended_flights[key][0]["extended_info"]["scheduled_departure_time"];
-      if (flight_time == "null")
-        flight_time =
-          extended_flights[key][0]["extended_info"]["estimated_departure_time"];
+      flight_time = extended_flights[key][0]["extended_info"]["real_departure_time"];
+      if (flight_time == "null") flight_time = extended_flights[key][0]["extended_info"]["scheduled_departure_time"];
+      if (flight_time == "null") flight_time = extended_flights[key][0]["extended_info"]["estimated_departure_time"];
       if (flight_time != "null") {
         var date = new Date(flight_time * 1000);
         var formated_date = date.toISOString().split("T")[0];
@@ -66,9 +53,7 @@ const period_details = {
         // if couldn't found departure time then assign null manually (because new Date(null) = 1970-01-01)
         formated_date = null;
       }
-      linksArr.push(
-        `https://www.hebcal.com/converter?cfg=json&date=${formated_date}&g2h=1&strict=1`
-      );
+      linksArr.push(`https://www.hebcal.com/converter?cfg=json&date=${formated_date}&g2h=1&strict=1`);
     }
     var period_info;
     await axios
@@ -87,9 +72,7 @@ const period_details = {
       if (period_info[i] == null) {
         console.log(
           // print in red color
-          "\u001b[31m" +
-            `Couldn't receive period info of flight ${keys[i]}` +
-            "\u001b[0m"
+          "\u001b[31m" + `Couldn't receive period info of flight ${keys[i]}` + "\u001b[0m"
         );
         continue;
       }
@@ -100,18 +83,17 @@ const period_details = {
         //console.log(`${event} ${keys[i]}`);
         // check if the first event contains one of the holiday events
         if (events.some((v) => event.includes(v))) {
-          extended_flights[keys[i]][0]["extended_info"]["period_type"] =
-            "Holiday";
+          extended_flights[keys[i]][0]["extended_info"]["period_type"] = "Holiday";
         } else {
           // Check if the departure is during summer vacation (July or August)
           flight_month = extended_flights[keys[i]][0]["extended_info"]["month"];
           if (flight_month == "August" || flight_month == "July") {
-            extended_flights[keys[i]][0]["extended_info"]["period_type"] =
-              "Summer Vacation";
+            extended_flights[keys[i]][0]["extended_info"]["period_type"] = "Summer Vacation";
             // Else, assign as a regular day
+          } else if (flight_month != null) {
+            extended_flights[keys[i]][0]["extended_info"]["period_type"] = "Regular";
           } else {
-            extended_flights[keys[i]][0]["extended_info"]["period_type"] =
-              "Regular";
+            console.log(`Misses period info of flight ${keys[i]}. month value is null`);
           }
         }
       } catch (e) {
