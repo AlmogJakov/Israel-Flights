@@ -24,7 +24,7 @@
         }
     }
 
-    trigger.addEventListener("click", toggleModal);
+    // trigger.addEventListener("click", toggleModal); // disable the modal
     closeButton.addEventListener("click", toggleModal);
     window.addEventListener("click", windowOnClick);
 </script>
@@ -41,7 +41,7 @@
 
         <div class="modal-header" style="width: 100%; display: inline-block;">
             <div style="width: 45%; display: inline-block;">
-                <h4 class="modal-title" style="width: 100%; text-align:left">Modal Heading</h4>
+                <h4 class="modal-title" style="width: 100%; text-align:left">Machine Learning</h4>
             </div>
             <div style="width: 45%; display: inline-block;">
                 <span class="close-button" id = "second-close-button">&times;</span>
@@ -80,17 +80,13 @@
     socket = io.connect();
     socket.on('learningResult', (data) => {
         //console.log(data);
-        for (const [key, value] of Object.entries(JSON.parse(data))) {
-            console.log(key, value);
-            document.querySelector("#secondModalContent").innerText = key + " " + value;
-        }
 
-        // width=100%
         var HTML = "<table border=1 width=100% align=center>";
-        for(j=1;j<=80;j++)
-        {
-            HTML += "<tr><td align=center>"+String.fromCharCode(j+64)+"</td>"
-                + "<td align=center>"+String.fromCharCode(j+64)+"</td></tr>";
+        HTML += "<tr><td align=center>"+"<b>Flight ID</b>"+"</td>"
+            + "<td align=center>"+"<b>Arrival Prediction</b>"+"</td></tr>";
+        for (const [key, value] of Object.entries(JSON.parse(data))) {
+            HTML += "<tr><td align=center>"+key+"</td>"
+                + "<td align=center>"+value+"</td></tr>";
         }
         HTML += "</table>";
 

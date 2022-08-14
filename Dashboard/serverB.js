@@ -34,17 +34,17 @@ kafka.consumer.on("data", async (msg) => {
   const flights = JSON.parse(msg.value);
   // Update the dashboard directly with the flights data
   io.emit("flights", flights);
-  // Store the current flights details with expire time (TTL) = 30 seconds
+  // Store the current flights details with expire time (TTL) = 60 seconds
   // (In a real-time system, the data becomes irrelevant after a certain time)
-  redis.setData(flights, "flights", 30);
+  redis.setData(flights, "flights", 60);
 });
 
 kafkaML.consumer.on("data", async (msg) => {
   //const flights = JSON.parse(msg.value);
   const learningResult = JSON.parse(msg.value);
-  // Store the current learning result with expire time (TTL) = 30 seconds
+  // Store the current learning result with expire time (TTL) = 60 seconds
   // (In a real-time system, the data becomes irrelevant after a certain time)
-  redis.setData(learningResult, "learningResult", 30);
+  redis.setData(learningResult, "learningResult", 60);
   // console.log(learningResult);
   io.emit("learningResult", learningResult);
 });

@@ -54,7 +54,7 @@ consumer.on("ready", function (arg) {
 
 consumer.on("data", function (m) {
   //console.log(m.value.toString());
-  console.log("Got data from kafka!");
+  console.log("Got ML data from kafka!");
 });
 
 consumer.on("disconnected", (arg) => {
