@@ -1,7 +1,7 @@
 
 
 <table style="display: table-cell; vertical-align: middle;">
-    <h1>Welcome!</h1>
+    <h1>Create Machine Learning Model</h1>
     <table style="position:relative;margin-left: auto;margin-right: auto;"></table>
     <div style="width:800px; margin:0 auto; text-align:center;" class="container">
         <h2>Date Range</h2>
@@ -10,9 +10,9 @@
         <h3 id="modelResult"></h3>
       </div>
 
-    <a id="submit" onclick="createModel()" href="#" class="btn" style="width:200px;margin-left: auto;margin-right: auto;">
-        Submit<section id="first_button_number"></section>
-    </a> 
+    <button id="create" onclick="createModel()" href="#" class="btn" style="width:200px;margin-left: auto;margin-right: auto;">
+        Create
+    </button> 
 
     </table>
     <script src="desky_cal.min.js"></script>
@@ -41,37 +41,27 @@
           document.getElementById('output').innerText=out;
         }
       </script>
-
-      
-    
-    <script type="text/javascript">
-    //let socket;
-    //socket = io.connect();
-
-    
-
-    
-    </script>
-
     <script>
             //let socket;
             socket = io.connect();
             const createModel = () => {
+                // Disable the button until server response
+                document.querySelector("#create").disabled = true;
+                document.querySelector("#modelResult").innerText = `Creating Model...`;
                 start = document.querySelector("#start").value;
                 end = document.querySelector("#end").value;
-                //start = document.querySelector('input[name="start"]').value;
-                //end = document.querySelector('input[name="end"]').value;
                 console.log(start + ">" + end);
                 socket.emit('dateRange', start + ">" + end);
             }
 
             socket.on('recordsFound', (data) => {
                 console.log(data);
-                // document.querySelector("#modelResult").innerText = `The model was successfully created with ${data} records!`;
-                document.querySelector("#modelResult").innerText = `Found ${data} records in the above date range.`;
-                // document.querySelector("#second_button_number").innerText = waiting_to_land;
+                if (data == 0) document.querySelector("#modelResult").innerText = `No records were found in the above date range!`;
+                else document.querySelector("#modelResult").innerText 
+                = `The model was successfully created!\n(Found ${data} records the above date range)`;
+                // Re-enable the button
+                document.querySelector("#create").disabled = false;
             });
         
     </script>
 </table>
-<!-- <button class="trigger">Click here to trigger the modal!</button> -->

@@ -82,7 +82,7 @@ consumer.on("event.error", (err) => {
   process.exit(1);
 });
 consumer.on("event.log", function (log) {
-  //console.log(log);
+  console.log(log);
 });
 consumer.connect();
 

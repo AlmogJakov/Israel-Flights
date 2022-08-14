@@ -1,4 +1,5 @@
 const fs = require("fs");
+const fsPromises = fs.promises;
 const Json2csvParser = require("json2csv").Parser;
 const flightsCollection = require("./schema");
 
@@ -43,7 +44,7 @@ const MongoDB = {
         });
         flight
           .save()
-          .then(() => console.log(`Flight ${key} Inserted to MongoDB!`))
+          .then(() => console.log("\u001b[32m" + `Flight ${key} Inserted to MongoDB!` + "\u001b[0m"))
           .catch((err) => console.log(err));
       }
     });

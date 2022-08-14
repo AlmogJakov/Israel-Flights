@@ -16,14 +16,10 @@ const weather_details = {
     var keys = Object.keys(extended_flights);
     let linksArr = [];
     for (const key of keys) {
-      src_airport_latitude =
-        extended_flights[key][0]["extended_info"]["src_airport_latitude"];
-      src_airport_longitude =
-        extended_flights[key][0]["extended_info"]["src_airport_longitude"];
-      dst_airport_latitude =
-        extended_flights[key][0]["extended_info"]["dst_airport_latitude"];
-      dst_airport_longitude =
-        extended_flights[key][0]["extended_info"]["dst_airport_longitude"];
+      src_airport_latitude = extended_flights[key][0]["extended_info"]["src_airport_latitude"];
+      src_airport_longitude = extended_flights[key][0]["extended_info"]["src_airport_longitude"];
+      dst_airport_latitude = extended_flights[key][0]["extended_info"]["dst_airport_latitude"];
+      dst_airport_longitude = extended_flights[key][0]["extended_info"]["dst_airport_longitude"];
       linksArr.push(
         `https://api.openweathermap.org/data/2.5/weather?lat=${src_airport_latitude}&lon=${src_airport_longitude}&appid=${api_key}`
       );
@@ -48,9 +44,7 @@ const weather_details = {
       if (weather_info[i * 2] == null || weather_info[i * 2 + 1] == null) {
         console.log(
           // print in red color
-          "\u001b[31m" +
-            `Couldn't receive weather data of flight ${keys[i]}` +
-            "\u001b[0m"
+          "\u001b[31m" + `Couldn't receive weather data of flight ${keys[i]}` + "\u001b[0m"
         );
         continue;
       }
@@ -61,9 +55,7 @@ const weather_details = {
         extended_flights[keys[i]][0]["extended_info"]["dst_country_weather"] =
           weather_info[i * 2 + 1]["data"]["weather"][0]["main"];
       } catch (e) {
-        console.log(
-          `Misses src/dst airport latitude/longitude of flight ${keys[i]}`
-        );
+        console.log(`Misses src/dst airport latitude/longitude of flight ${keys[i]}`);
       }
     }
     return extended_flights;
