@@ -13,6 +13,7 @@ function diff_minutes(dt2, dt1) {
 }
 
 const MongoDB = {
+  // Get the 'flights' details, and stores only the flights with property landed=true
   saveFlightsDetails: function (flights) {
     var data = JSON.parse(flights);
     var keys = Object.keys(data);
@@ -49,6 +50,7 @@ const MongoDB = {
       }
     });
   },
+  // Retrieve the records created within the input date range from mongoDB and export to csv
   export2csv: async function (dateRange) {
     const datesArray = dateRange.split(">");
     startDate = new Date(datesArray[0]); // From this day (Including this day)
@@ -85,10 +87,14 @@ const MongoDB = {
       return 0;
     }
     const csvData = json2csvParser.parse(records, csvFields);
-    await fs.writeFile("flightDetails.csv", csvData, function (error) {
-      if (error) throw error;
-      console.log("Write to flightDetails.csv successfully!");
-    });
+    await fsPromises
+      .writeFile("flightDetails.csv", csvData)
+      .then(() => {
+        console.log("Write to flightDetails.csv successfully!");
+      })
+      .catch((er) => {
+        console.log(er);
+      });
     return records.length;
   },
 };

@@ -28,6 +28,4 @@ io.on("connection", (socket) => {
 
 const Port = process.env.PORT | 3000;
 //http://localhost:3000
-server.listen(Port, () =>
-  console.log(`Call Generator app listening at http://localhost:${Port}`)
-);
+server.listen(Port, () => console.log(`App listening at http://localhost:${Port}`));

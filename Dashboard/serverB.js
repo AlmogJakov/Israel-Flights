@@ -5,6 +5,7 @@ const io = require("socket.io")(server, {
   allowEIO3: true, // false by default
 });
 const kafka = require("./models/consumeKafka");
+const kafkaML = require("./models/consumeKafkaML");
 const redis = require("./models/redisDB");
 const controllerRouter = require("./routes/controller"); //controller
 const path = require("path");
@@ -34,6 +35,11 @@ kafka.consumer.on("data", async (msg) => {
   redis.setFlights(flights, 30);
 });
 
+kafkaML.consumer.on("data", async (msg) => {
+  const flights = JSON.parse(msg.value);
+  console.log(JSON.parse(flights));
+});
+
 //----------------Front Side - Daily Call Center ------------------
 
 app.use("/", controllerRouter);
@@ -42,4 +48,4 @@ app.use("/", controllerRouter);
 
 const Port = process.env.PORT || 3001;
 //http://localhost:3001
-server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));
+server.listen(Port, () => console.log(`App listening at http://localhost:${Port}`));

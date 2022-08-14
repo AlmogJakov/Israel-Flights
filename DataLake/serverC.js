@@ -24,6 +24,7 @@ app.use(express.json());
 kafka.consumer.on("data", (msg) => {
   // Parse the input data (flights) to json
   mongodb.saveFlightsDetails(JSON.parse(msg.value));
+  bigML.predictAll(JSON.parse(msg.value));
   //mongodb.export2csv();
   //bigML.createModel();
   // console.log(keys);
@@ -67,8 +68,9 @@ app.use("/", controllerRouter);
 io.on("connection", (socket) => {
   // Build a model from the dates obtained
   socket.on("dateRange", async (msg) => {
+    // Return num of records used to build the model
+    // TODO: on error, return an error message to the client
     var recordsFound = await BigML.createModel(msg);
-    //console.log(recordsFound);
     socket.emit("recordsFound", recordsFound);
     // setTimeout(function () {
     //   socket.emit("Model", res);
