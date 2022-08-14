@@ -58,8 +58,8 @@ const BigML = {
     await Promise.all(resultPromises).then((values) => {
       resultValues = values;
     });
-    var ziped = Object.fromEntries(keys.map((k, i) => [k, resultValues[i]]));
-    return ziped;
+    var ziped = Object.fromEntries(keys.map((k, i) => [k + "", resultValues[i] + ""]));
+    return JSON.stringify(ziped);
   },
 
   // BigML assumes that the parameter we want to predict is in the last column

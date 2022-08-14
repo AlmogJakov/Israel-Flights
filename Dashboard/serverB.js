@@ -22,6 +22,10 @@ io.on("connection", async (socket) => {
   let redisFlights = await redis.getFlights();
   // Update the dashboard directly with the returned flights data
   io.emit("flights", redisFlights);
+  //
+  let learningResult = await redis.getLearningResult();
+  //
+  io.emit("learningResult", learningResult);
 });
 
 // ------------Consumer from Kafka-----------------
@@ -32,12 +36,15 @@ kafka.consumer.on("data", async (msg) => {
   io.emit("flights", flights);
   // Store the current flights details with expire time (TTL) = 20 seconds
   // (In a real-time system, the data becomes irrelevant after a certain time)
-  redis.setFlights(flights, 30);
+  redis.setFlights(flights, "flights", 30);
 });
 
 kafkaML.consumer.on("data", async (msg) => {
   //const flights = JSON.parse(msg.value);
-  console.log(JSON.parse(msg.value));
+  const learningResult = JSON.parse(msg.value);
+  redis.setFlights(learningResult, "learningResult", 30);
+  // console.log(learningResult);
+  io.emit("learningResult", learningResult);
 });
 
 //----------------Front Side - Daily Call Center ------------------
