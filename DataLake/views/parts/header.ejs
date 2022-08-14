@@ -2,40 +2,76 @@
 
 <table style="display: table-cell; vertical-align: middle;">
     <h1>Welcome!</h1>
-    <table style="position:relative;margin-left: auto;margin-right: auto;">
-        <th>
-            <a id="first_button" href="#" class="btn" style="width:420px;margin-left: auto;margin-right: auto;">
-                Flights waiting to take off:&nbsp;<section id="first_button_number">N/A</section>
-            </a> 
-        </th>
-        <th>
-            &nbsp;&nbsp;
-        </th>
-        <th  id="second_button">
-            <a id="second_button" href="#" class="btn" style="width:400px;margin-left: auto;margin-right: auto;">
-                Flights waiting to land:&nbsp;<section id="second_button_number">N/A</section>
-            </a> 
-        </th>
+    <table style="position:relative;margin-left: auto;margin-right: auto;"></table>
+    <div style="width:800px; margin:0 auto; text-align:center;" class="container">
+        <h2>Date Range</h2>
+        <input id="start">
+        <input id="end" name="end">
+        <h3 id="modelResult"></h3>
+      </div>
+
+    <a id="submit" onclick="createModel()" href="#" class="btn" style="width:200px;margin-left: auto;margin-right: auto;">
+        Submit<section id="first_button_number"></section>
+    </a> 
+
     </table>
+    <script src="desky_cal.min.js"></script>
+    <link rel="stylesheet" href="deskyCal.css" />
+    <script>
+        const d = Date.parse('04 Dec 2025 00:12:00 GMT');
+        initDeskyCalendar("basic", null, null, true);
+        initDeskyCalendar("single", "single");
+        initDeskyCalendar("start", "single", null, null, "end");
+        initDeskyCalendar("end", "single");
+        initDeskyCalendar("callback", "double", null, null, null, null, null, null, call_back_function);
+        const d2 = new Date();
+        const d3 = new Date();
+        d2.setTime(d2.getTime()-(2*3600*24*1000));
+        d3.setTime(d3.getTime()+(10*3600*24*1000));
+        initDeskyCalendar("before", "single", null, null, null, d2);
+        initDeskyCalendar("beforeafter", "single", null, null, null, d2, d3);
+        function call_back_function(d) {
+          /// accept the returned date as only argument
+          // calc date difference
+          let now=new Date();
+          let diff=d.getTime()-now.getTime();
+          let days=Math.round(diff/(3600*24*1000));
+          let out = "Date selected "+Math.abs(days)+" days ";
+          (days<0) ? out+="in the past" : (days==0) ? out="You selected Today" : out+="in the future";
+          document.getElementById('output').innerText=out;
+        }
+      </script>
+
+      
     
     <script type="text/javascript">
     //let socket;
-    socket = io.connect();
-    socket.on('flights', (data) => {
-        var data = JSON.parse(data);
-        var keys = Object.keys(data);
-        let waiting_to_take_off = 0;
-        let waiting_to_land = 0;
-        //waiting_to_land = keys.length;
-        keys.forEach(function (key) {
-            if (data[key][0]["landed"] == false) {
-                if (data[key][0]["extended_info"]["real_departure_time"] != null) waiting_to_land++;
-                else waiting_to_take_off++;
+    //socket = io.connect();
+
+    
+
+    
+    </script>
+
+    <script>
+            //let socket;
+            socket = io.connect();
+            const createModel = () => {
+                start = document.querySelector("#start").value;
+                end = document.querySelector("#end").value;
+                //start = document.querySelector('input[name="start"]').value;
+                //end = document.querySelector('input[name="end"]').value;
+                console.log(start + ">" + end);
+                socket.emit('dateRange', start + ">" + end);
             }
-        });
-        document.querySelector("#first_button_number").innerText = waiting_to_take_off;
-        document.querySelector("#second_button_number").innerText = waiting_to_land;
-    });
+
+            socket.on('recordsFound', (data) => {
+                console.log(data);
+                // document.querySelector("#modelResult").innerText = `The model was successfully created with ${data} records!`;
+                document.querySelector("#modelResult").innerText = `Found ${data} records in the above date range.`;
+                // document.querySelector("#second_button_number").innerText = waiting_to_land;
+            });
+        
     </script>
 </table>
 <!-- <button class="trigger">Click here to trigger the modal!</button> -->

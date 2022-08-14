@@ -9,30 +9,39 @@ var connection = new bigml.BigML("almog1006", "4c50b7ad4f22a8a4e3bc6c23623d299f4
 var source = new bigml.Source(connection);
 
 const BigML = {
-  createModel: async function () {
-    await mongodb.export2csv();
+  createModel: async function (dateRange) {
+    records = await mongodb.export2csv(dateRange);
+    if (records == 0) {
+      console.log(`Didn't find any records in the date range: ${dateRange}`);
+      return 0;
+    }
     await sleep(200);
-    source.create("flightDetails.csv", function (error, sourceInfo) {
+    await source.create("flightDetails.csv", async function (error, sourceInfo) {
       if (!error && sourceInfo) {
         const dataset = new bigml.Dataset(connection);
-        dataset.create(sourceInfo, function (error, datasetInfo) {
+        await dataset.create(sourceInfo, async function (error, datasetInfo) {
           if (!error && datasetInfo) {
             var model = new bigml.Model(connection);
-            model.create(datasetInfo, function (error, modelInfo) {
+            await model.create(datasetInfo, async function (error, modelInfo) {
               if (!error && modelInfo) {
-                fs.writeFile("model.txt", modelInfo.object.resource, (err) => {
-                  if (err) return console.log(err);
-                  console.log("Model created!");
+                await fs.writeFile("model.txt", modelInfo.object.resource, (err) => {
+                  if (err) {
+                    console.log("BigML error:" + err);
+                  } else {
+                    console.log("Model created!");
+                  }
                 });
               }
             });
           }
         });
       } else {
-        console.log(error);
+        console.log("BigML error:" + error);
       }
     });
-    return "Model created!";
+    //return "Model created!";
+    return records;
+    //return res;
   },
 
   // BigML assumes that the parameter we want to predict is in the last column

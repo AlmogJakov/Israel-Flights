@@ -47,6 +47,28 @@ h1 {
       font-size: 3rem;
     }
   }
+
+  h2 {
+    color: #f1c40f;
+    font-size: 2rem;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.4em;
+  }
+
+  h3 {
+    color: #f1c40f;
+    font-size: 1rem;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.4em;
+  }
   
   p {
     color: #f1c40f;

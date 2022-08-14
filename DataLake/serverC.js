@@ -5,7 +5,7 @@ const io = require("socket.io")(server, {
   allowEIO3: true, // false by default
 });
 var fs = require("fs");
-//const BigML = require('./models/bml');
+const BigML = require("./models/bml");
 const mongodb = require("./models/MongoDB/mongodb");
 const bigML = require("./models/bml");
 const kafka = require("./models/consumeKafka");
@@ -63,6 +63,18 @@ app.use("/", controllerRouter);
 //       socket.emit("Model", res);
 //     }, 10000);
 //   });
+
+io.on("connection", (socket) => {
+  // Build a model from the dates obtained
+  socket.on("dateRange", async (msg) => {
+    var recordsFound = await BigML.createModel(msg);
+    //console.log(recordsFound);
+    socket.emit("recordsFound", recordsFound);
+    // setTimeout(function () {
+    //   socket.emit("Model", res);
+    // }, 10000);
+  });
+});
 
 //   socket.on("Predict", async (msg) => {
 //     await BigML.predict(newcall);

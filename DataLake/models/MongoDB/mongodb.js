@@ -47,68 +47,48 @@ const MongoDB = {
           .catch((err) => console.log(err));
       }
     });
-
-    // const flight = new flightsCollection({
-    //   flightID: "000",
-    //   periodType: "000",
-    //   month: "00a",
-    //   day: "00b",
-    //   company: "00c",
-    //   srcCountry: "00d",
-    //   dstCountry: "00e",
-    //   flightDurationType: "00f",
-    //   srcCountryWeather: "00g",
-    //   dstCountryWeather: "00h",
-    //   arrivalTimeType: "00i",
-    // });
-
-    //const flights = new flightsCollection(flights);
-    //Enter flight details to DB
-    // flight
-    //   .save()
-    //   .then(() => console.log("Inserted to MongoDB"))
-    //   .catch((err) => console.log(err));
   },
-  export2csv: async function () {
-    //flightsCollection;
-    // .find({}, { _id: 0 })
-    flightsCollection
+  export2csv: async function (dateRange) {
+    const datesArray = dateRange.split(">");
+    startDate = new Date(datesArray[0]); // From this day (Including this day)
+    endDate = new Date(datesArray[1]); // Until this day (but NOT including this day)
+    // Add one day to endDate so the last day will be included in the calculation
+    endDate.setDate(endDate.getDate() + 1); // Until this day (Including this day)
+    var records = await flightsCollection
       .find({
         createdAt: {
-          // Month parameter start from 0!
-          // Therefore, for example, the august indicator is 7 (and not 8)
-          $gte: new Date(2022, 7, 11), // From this day (Including this day)
-          $lt: new Date(2022, 7, 12), // Until this day (but NOT including this day)
+          $gte: startDate,
+          $lt: endDate,
         },
       })
       .lean()
-      .select("-_id -createdAt -updatedAt")
-      .exec((err, data) => {
-        // if (err) throw err;
-        //console.log(data);
-
-        const csvFields = [
-          "flightID",
-          "periodType",
-          "month",
-          "day",
-          "company",
-          "srcCountry",
-          "dstCountry",
-          "flightDurationType",
-          "srcCountryWeather",
-          "dstCountryWeather",
-          "arrivalTimeType",
-        ];
-        const json2csvParser = new Json2csvParser({
-          csvFields,
-        });
-        const csvData = json2csvParser.parse(data, csvFields);
-        fs.writeFile("flightDetails.csv", csvData, function (error) {
-          if (error) throw error;
-          console.log("Write to flightDetails.csv successfully!");
-        });
-      });
+      .select("-_id -createdAt -updatedAt");
+    const csvFields = [
+      "flightID",
+      "periodType",
+      "month",
+      "day",
+      "company",
+      "srcCountry",
+      "dstCountry",
+      "flightDurationType",
+      "srcCountryWeather",
+      "dstCountryWeather",
+      "arrivalTimeType",
+    ];
+    const json2csvParser = new Json2csvParser({
+      csvFields,
+    });
+    // Data should not be empty when calling 'json2csvParser'
+    if (records.length == 0) {
+      return 0;
+    }
+    const csvData = json2csvParser.parse(records, csvFields);
+    await fs.writeFile("flightDetails.csv", csvData, function (error) {
+      if (error) throw error;
+      console.log("Write to flightDetails.csv successfully!");
+    });
+    return records.length;
   },
 };
 
