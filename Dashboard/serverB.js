@@ -19,13 +19,13 @@ app.use(express.json());
 //-------------Socket.io-------------------------
 io.on("connection", async (socket) => {
   // Get redis flights (in case there is no record - an empty array is returned)
-  let redisFlights = await redis.getFlights();
+  let redisFlights = await redis.getData("flights");
   // Update the dashboard directly with the returned flights data
   io.emit("flights", redisFlights);
   //
-  let learningResult = await redis.getLearningResult();
+  let redisLearningResult = await redis.getData("learningResult");
   //
-  io.emit("learningResult", learningResult);
+  io.emit("learningResult", redisLearningResult);
 });
 
 // ------------Consumer from Kafka-----------------
@@ -34,15 +34,17 @@ kafka.consumer.on("data", async (msg) => {
   const flights = JSON.parse(msg.value);
   // Update the dashboard directly with the flights data
   io.emit("flights", flights);
-  // Store the current flights details with expire time (TTL) = 20 seconds
+  // Store the current flights details with expire time (TTL) = 30 seconds
   // (In a real-time system, the data becomes irrelevant after a certain time)
-  redis.setFlights(flights, "flights", 30);
+  redis.setData(flights, "flights", 30);
 });
 
 kafkaML.consumer.on("data", async (msg) => {
   //const flights = JSON.parse(msg.value);
   const learningResult = JSON.parse(msg.value);
-  redis.setFlights(learningResult, "learningResult", 30);
+  // Store the current learning result with expire time (TTL) = 30 seconds
+  // (In a real-time system, the data becomes irrelevant after a certain time)
+  redis.setData(learningResult, "learningResult", 30);
   // console.log(learningResult);
   io.emit("learningResult", learningResult);
 });

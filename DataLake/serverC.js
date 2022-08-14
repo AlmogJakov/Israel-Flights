@@ -26,7 +26,7 @@ kafka.consumer.on("data", async (msg) => {
   // Parse the input data (flights) to json
   mongodb.saveFlightsDetails(JSON.parse(msg.value));
   var result = await bigML.predictAll(JSON.parse(msg.value));
-  console.log(result);
+  //console.log(result);
   kafkaML.publish(result);
 
   //mongodb.export2csv();

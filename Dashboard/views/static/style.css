@@ -47,6 +47,17 @@ h1 {
       font-size: 3rem;
     }
   }
+
+  h4 {
+    color: #ffffff;
+    font-size: 1rem;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-block-start: 0.67em;
+    margin-block-end: 0em;
+  }
   
   p {
     color: #f1c40f;
@@ -132,18 +143,41 @@ h1 {
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
 
+.modal-header {
+  background-color: #2e52b4;
+  /* padding:16px 16px; */
+  padding:4% 4%;
+  color:#FFF;
+  border-bottom:2px dashed #2e52b4;
+}
+
 .modal-content {
     position: absolute;
+    /* max height */
+    max-height: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    padding: 1rem 1.5rem;
+    /* padding: 1rem 1.5rem; */
     width: 24rem;
     border-radius: 0.5rem;
+    /* add scrollbar */
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.modal-table-content {
+  top: 50%;
+  left: 50%;
+  padding: 1rem 1.5rem;
+  /* add scrollbar */
+  overflow: hidden;
+  /* overflow-y: auto; */
 }
 
 .close-button {
+    color: #000;
     float: right;
     width: 1.5rem;
     line-height: 1.5rem;
