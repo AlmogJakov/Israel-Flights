@@ -9,6 +9,7 @@ const BigML = require("./models/bml");
 const mongodb = require("./models/MongoDB/mongodb");
 const bigML = require("./models/bml");
 const kafka = require("./models/consumeKafka");
+var kafkaML = require("./models/produceKafkaML");
 
 const controllerRouter = require("./routes/controller"); //controller
 
@@ -21,10 +22,13 @@ app.use(express.json());
 //------------Consumer from Kafka-----------------
 
 // get data from kafka to store (and predict later)
-kafka.consumer.on("data", (msg) => {
+kafka.consumer.on("data", async (msg) => {
   // Parse the input data (flights) to json
   mongodb.saveFlightsDetails(JSON.parse(msg.value));
-  bigML.predictAll(JSON.parse(msg.value));
+  var result = await bigML.predictAll(JSON.parse(msg.value));
+  console.log(result);
+  kafkaML.publish(result);
+
   //mongodb.export2csv();
   //bigML.createModel();
   // console.log(keys);

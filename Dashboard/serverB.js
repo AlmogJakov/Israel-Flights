@@ -36,8 +36,8 @@ kafka.consumer.on("data", async (msg) => {
 });
 
 kafkaML.consumer.on("data", async (msg) => {
-  const flights = JSON.parse(msg.value);
-  console.log(JSON.parse(flights));
+  //const flights = JSON.parse(msg.value);
+  console.log(JSON.parse(msg.value));
 });
 
 //----------------Front Side - Daily Call Center ------------------

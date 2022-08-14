@@ -53,13 +53,13 @@ const BigML = {
         arrivalTimeType: 0,
       };
       resultPromises.push(BigML.predict(prediction, toPredict));
-      //var res = await BigML.predict(prediction, toPredict);
-      //console.log(res);
     }
+    resultValues = [];
     await Promise.all(resultPromises).then((values) => {
-      console.log(values);
-      kafkaML.publish(JSON.stringify(values));
+      resultValues = values;
     });
+    var ziped = Object.fromEntries(keys.map((k, i) => [k, resultValues[i]]));
+    return ziped;
   },
 
   // BigML assumes that the parameter we want to predict is in the last column
