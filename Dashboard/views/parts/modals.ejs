@@ -78,6 +78,14 @@
     <script type="text/javascript">
     //let socket;
     socket = io.connect();
+
+    //socket.on("connection", async (socket) => {
+        var HTML = "<table border=0 width=100% align=center>";
+        HTML += "<tr><td align=center>"+"<b>Waiting for ML data...</b>"+"</td></tr>";
+        HTML += "</table>";
+        document.querySelector("#secondModalContent").innerHTML= HTML;
+    //});
+
     socket.on('learningResult', (data) => {
         //console.log(data);
 
