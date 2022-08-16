@@ -1,5 +1,4 @@
 var express = require("express");
-const axios = require("axios");
 var router = require("../routes/controller");
 router = express.Router();
 

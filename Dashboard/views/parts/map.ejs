@@ -11,8 +11,9 @@
     <title></title>
     <meta charset="utf-8" />
     <!-- Reference to the Bing Maps SDK -->
+    <!-- Should call 'bing' with https (not http) to work with Heroku -->
     <script type='text/javascript'
-        src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
+        src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
         async defer>
     </script>
     <!--
@@ -23,7 +24,9 @@
     
     <script type="text/javascript">
     //let socket;
-        var map = null;
+        //var map = null;
+        var map, infobox, tooltip;
+        var tooltipTemplate = '<div style="border-radius: 0.45rem;background-color:white;height:20px;width:150px;padding:5px;text-align:center"><b>{title}</b></div>';
         function setMap() {
             socket = io.connect();
             socket.on('flights', function (msg) {
@@ -88,10 +91,24 @@
             // Initialize the map - USE YOUR OWN KEY !
             map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk", customMapStyle: myStyle});
 			map.setView({
-            //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-            center: new Microsoft.Maps.Location(33.027222, 32.0225),
-            zoom: 6
-        });
+                //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                center: new Microsoft.Maps.Location(33.027222, 32.0225),
+                zoom: 6
+            });
+
+            //Create an infobox to use as a tooltip when hovering.
+            tooltip = new Microsoft.Maps.Infobox(map.getCenter(), {
+                visible: false,
+                showPointer: false,
+                showCloseButton: false,
+                offset: new Microsoft.Maps.Point(-75, 20)
+            });
+            tooltip.setMap(map);
+            //Create an infobox for displaying detailed information.
+            infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                visible: false
+            });
+            infobox.setMap(map);
         }
     </script>
 
@@ -132,6 +149,16 @@
 					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
 				});
 
+                pin.metadata = {
+                    title: 'ID: ' + filghtID,
+                    description: 'Discription for pin ' + filghtID
+                };
+
+                //Add a mouse events to the pushpin.
+                //Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+                Microsoft.Maps.Events.addHandler(pin, 'mouseover', pushpinHovered);
+                Microsoft.Maps.Events.addHandler(pin, 'mouseout', closeTooltip);
+                
 				if (callback) {
 					callback(pin);
 				}
@@ -143,54 +170,10 @@
 		}
 		// end rotation
 		
-        function add(flightsData)
-        {
-            //alert(flightsData);
-            //map.entities.clear();
-            //var json = JSON.parse(flightsData)
-            //var currFlights = Object.flights(json);
-             //var json = JSON.parse(data)
-            //const json = JSON.parse(JSON.stringify(database));
-            // alert(flights);
-            // var pushPins = FindVisualChildren<Pushpin>(map);
-            // foreach (pushPin in pushPins) {
-            //     //map.Children.Remove(pushPin);
-            // }
-            
-            // Update pushpin: https://social.msdn.microsoft.com/Forums/office/en-US/28a415e5-4278-42e6-bdf6-e3937ea1f053/how-do-i-update-the-position-of-an-existing-push-pin?forum=bingmaps
-            // Remove pushpin: https://stackoverflow.com/questions/9135950/bing-maps-api-remove-pins
-
-            // // remove old flights from current entities
-            // var i = 0, entity;
-            // while (i < map.entities.getLength()) {
-            //     entity = map.entities.get(i);
-            //     if (!currFlights.includes(entity.getTitle(), 0)) {
-            //         //alert(entity.getTitle());
-            //         map.entities.remove(entity);
-            //     }
-            //     i += 1;
-            // }
-            
-            // // add new flights to entities (need to fix)
-            // //alert(map.entities.get(2111));
-            // var i = 0, entity;
-            // while (i < currFlights.getLength()) {
-            //     entity = currFlights[i];
-            //     if (entity==null) {
-            //         //alert(entity.getTitle());
-            //         map.entities.remove(entity);
-            //     }
-            //     i += 1;
-            // }
-
-
-            
+        function add(flightsData) {
             map.entities.clear();
             var json = JSON.parse(flightsData)
             var keys = Object.keys(json);
-             //var json = JSON.parse(data)
-            //const json = JSON.parse(JSON.stringify(database));
-            // alert(keys);
             for (var i = 0; i < keys.length; i++) {
                 var filghtID = keys[i];
                 var coordinate_x = JSON.stringify(json[filghtID][0]['coordinate_x']);
@@ -200,22 +183,9 @@
 			    createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
 				    map.entities.push(pin);
 			    });
-                // var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
-                //     pin4 = new Microsoft.Maps.Pushpin(loc4, {
-                //     icon: 'https://i.ibb.co/K9YmQ75/airplane.png',
-                //     anchor: new Microsoft.Maps.Point(10, 10)
-                // });
-                // map.entities.push(pin4);
-                //var coordinate_x = flightData[0];
-                //alert(coordinate_x);
             }
-            
-			
-			//setTimeout(function(){
-			//	map.entities.clear();
-			//}, 1000);
-			//delay(5000).then(() => map.entities.clear());
         }
+
         function move() {
             for (var i = map.entities.getLength() - 1; i >= 0; i--) {
                 var pushpin = map.entities.get(i);
@@ -223,8 +193,43 @@
                     map.entities.removeAt(i);
                 }
             }
-        }       
-       
+        }
+
+        function pushpinHovered(e) {
+        //Hide the infobox
+        infobox.setOptions({ visible: false });
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            tooltip.setOptions({
+                location: e.target.getLocation(),
+                htmlContent: tooltipTemplate.replace('{title}', e.target.metadata.title),
+                visible: true
+            });
+        }
+    }
+    
+    function closeTooltip() {
+        //Close the tooltip.
+        tooltip.setOptions({
+            visible: false
+        });
+    }
+
+    function pushpinClicked(e) {
+        //Hide the tooltip
+        closeTooltip();
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                description: e.target.metadata.description,
+                visible: true
+            });
+        }
+    }
 		
 		
     </script>

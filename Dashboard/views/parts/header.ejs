@@ -20,7 +20,7 @@
     
     <script type="text/javascript">
     //let socket;
-    socket = io.connect();
+    //socket = io.connect();
     socket.on('flights', (data) => {
         var data = JSON.parse(data);
         var keys = Object.keys(data);
