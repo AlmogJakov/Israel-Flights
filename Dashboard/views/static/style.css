@@ -4,10 +4,22 @@ html, body {
     /* width: 100%; */
     width: 100vw;
     height: 100%;
-    background: #2c3e50;
+    /* background: #2c3e50; */
+    background-image: url("background.jpg");
+    background-size: 110% 110%;
+    background-position: center center;
+    animation: shrink 5s infinite alternate;
     font-family: "Montserrat", sans-serif;
     font-size: 16px;
     overflow: auto;
+  }
+  @keyframes shrink {
+    0% {
+      background-size: 110% 110%;
+    }
+    100% {
+      background-size: 100% 100%;
+    }
   }
   
   body {
@@ -23,6 +35,22 @@ html, body {
     overflow: auto;
   }
 
+  .title-header {
+    height: 210px; 
+    width: 100%; 
+    background:rgb(29, 26, 26); 
+    display:block
+  }
+
+  .map-container {
+    height: calc(100% - 250px); 
+    display:flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .nav-bar {
     position: absolute;
     width: 100%;
@@ -34,12 +62,13 @@ html, body {
   
 h1 {
     color: #f1c40f;
-    font-size: 4rem;
+    font-size: 4.1rem;
     text-transform: uppercase;
     display: block;
     width: 100%;
     text-align: center;
-    margin-block-start: 0.67em;
+    margin-block-start: 0em;
+    padding-top: 0.47em;
     margin-block-end: 0em;
   }
   @media screen and (max-width: 600px) {
@@ -121,6 +150,15 @@ h1 {
     /* background: #73AD21; */
     /* https://stackoverflow.com/questions/3714862/forcing-child-to-obey-parents-curved-borders-in-css */
     overflow: hidden;
+    position:relative; 
+    max-width: 1000px;
+    max-height: 600px;
+    /* width:1000px; */
+    /* height:600px; */
+    margin-left: auto;
+    margin-right: auto; 
+    margin-top: auto;
+    margin-bottom: auto;
   }
 
 .center {
@@ -144,11 +182,22 @@ h1 {
 }
 
 .modal-header {
-  background-color: #2e52b4;
+  background-color: #d4ac09;
   /* padding:16px 16px; */
   padding:4% 4%;
   color:#FFF;
-  border-bottom:2px dashed #2e52b4;
+  border-bottom:2px dashed #3a3007;
+}
+
+.modal-title {
+  color: #000;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-block-start: 0.67em;
+  margin-block-end: 0em;
 }
 
 .modal-content {

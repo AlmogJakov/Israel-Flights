@@ -38,7 +38,11 @@ const BigML = {
     var data = JSON.parse(flightsToPredict);
     var keys = Object.keys(data);
     var resultPromises = [];
+    targetKeys = [];
+    resultValues = [];
     for (const key of keys) {
+      // Predict only flights that have taken off but not landed
+      if (data[key][0]["landed"] == true || data[key][0]["extended_info"]["real_departure_time"] == null) continue;
       toPredict = {
         flightID: key,
         periodType: data[key][0]["extended_info"]["period_type"],
@@ -52,13 +56,13 @@ const BigML = {
         dstCountryWeather: data[key][0]["extended_info"]["dst_country_weather"],
         arrivalTimeType: 0,
       };
+      targetKeys.push(key);
       resultPromises.push(BigML.predict(prediction, toPredict));
     }
-    resultValues = [];
     await Promise.all(resultPromises).then((values) => {
       resultValues = values;
     });
-    var ziped = Object.fromEntries(keys.map((k, i) => [k + "", resultValues[i] + ""]));
+    var ziped = Object.fromEntries(targetKeys.map((k, i) => [k + "", resultValues[i] + ""]));
     return JSON.stringify(ziped);
   },
 
