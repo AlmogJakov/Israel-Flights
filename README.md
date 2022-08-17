@@ -11,6 +11,7 @@
 
 <h2>Remarks & Data analysis:</h2>   
 
+- (flightradar24) After a quick sampling of about 50-100 flight records (where each sample is individual access to extended flight details) it is necessary to wait about 15-20 seconds in order not to receive a refusal error (403) from the flightradar24 server.   
 - (flightradar24) It seems that it takes a while for a flight to be updated as 'landed' even though the flight has already landed! Therefore, the 'landed' record is the last record that we were able to capture in real time   
 - In order to fill weather info ('fillWeatherDetails') or period info ('fillPeriodDetails') to a flight record, It is necessary to first fill the extended details using 'fillExtendedDetails' (Because fetching weather info and fetching period info depends on the parameters obtained after running 'fillExtendedDetails'). In other words, It is necessary to call 'fillExtendedDetails' before calling 'fillWeatherDetails' or 'fillPeriodDetails'.   
 
@@ -40,9 +41,9 @@
 - Navigate to Dashboard->models->consumeKafkaML.js and set-up your connection details (used 'ml' topic to receive the prediction info from DataEntry server)
 
 <b>Redis:</b>
-- navigate to Dashboard->models->connectRedis.js and set-up your connection details (In this project we used Redis locally using Docker. Later, we uploaded the server [Dashboard] to Heroku using Cloud Redis)
+- navigate to Dashboard->models->connectRedis.js and set-up your connection details (In this project we used Redis locally using Docker. Later, we uploaded the server [Dashboard] to Heroku using Cloud Redis connection details)
 
-(To run Redis Locally using Docker follow this tutorial: https://geshan.com.np/blog/2022/01/redis-docker and the run the command: "<b>docker-compose -f docker-compose-redis.yml up</b>" to active Redis)
+(To run Redis Locally using Docker follow this tutorial: https://geshan.com.np/blog/2022/01/redis-docker and then run the command: "<b>docker-compose -f docker-compose-redis.yml up</b>" to active Redis)
 
 <h3>DataLake (C)</h3>
 
@@ -53,6 +54,7 @@
 - Navigate to DataLake->models->produceKafkaML.js and set-up your connection details (used 'ml' topic to send the prediction info to Dashboard server)
 
 <b>MongoDB:</b>
-- navigate to Dashboard->models->MongoDB->connect.js and set-up your connection details
+- navigate to DataLake->models->MongoDB->connect.js and set-up your connection details
 
-
+<b>BigML:</b>
+- navigate to DataLake->models->bml.js and set-up your connection details
