@@ -52,9 +52,9 @@ The organization of services is implemented in the Node.js environment and in th
 
 <h2>Getting Started</h2>
 
-- In this project kafka is used as a massage broker. It is necessary to open a kafka account with 3 topics. 2 topics for sending data from the DataEntry to Dashboard/Datalake (one for each) and another topic to send the results of the prediction model (obtained from BigML) from the Datalake to the Dashboard [See the explanation below for the names of the topics and their uses].   
+- In this project, kafka is used as a massage broker. It is necessary to open a kafka account with 3 topics. 2 topics for sending data from the DataEntry to Dashboard/Datalake (one for each) and another topic to send the results of the prediction model (obtained from BigML) from the Datalake to the Dashboard [See the explanation below for the names of the topics and their uses].   
 - In this project we used the following provider: cloudkarafka.com   
-- Sometimes, after some time, kafka becomes slow and then it is necessary to open a new instance (and of course, redefine the above 3 topics)   
+- If kafka becomes slow (after heavy use) it is necessary to open a new instance (and of course, redefine the above 3 topics)   
 
 <h3>DataEntry Server (A)</h3>
 
