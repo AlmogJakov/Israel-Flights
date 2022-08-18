@@ -16,18 +16,23 @@ const BigML = {
       return 0;
     }
     await sleep(200);
-    var sourceInfoV = await sourceInfo();
-    const dataset = new bigml.Dataset(connection);
-    var datasetInfoV = await datasetInfo(dataset, sourceInfoV);
-    var model = new bigml.Model(connection);
-    var modelInfoV = await modelInfo(model, datasetInfoV);
+    try {
+      var sourceInfoV = await sourceInfo();
+      const dataset = new bigml.Dataset(connection);
+      var datasetInfoV = await datasetInfo(dataset, sourceInfoV);
+      var model = new bigml.Model(connection);
+      var modelInfoV = await modelInfo(model, datasetInfoV);
+    } catch (err) {
+      console.log("BigML 'createModel' error: " + err);
+    }
+    var fileName = "model.txt";
     await fsPromises
-      .writeFile("model.txt", modelInfoV.object.resource)
+      .writeFile(fileName, modelInfoV.object.resource)
       .then(() => {
         console.log("\u001b[35m" + `Model Created!` + "\u001b[0m");
       })
       .catch((er) => {
-        console.log(er);
+        console.log("BigML write to " + fileName + " error: " + er);
       });
     return records;
   },
@@ -56,12 +61,24 @@ const BigML = {
         dstCountryWeather: data[key][0]["extended_info"]["dst_country_weather"],
         arrivalTimeType: 0,
       };
-      targetKeys.push(key);
-      resultPromises.push(BigML.predict(prediction, toPredict));
+      try {
+        var promise = BigML.predict(prediction, toPredict);
+        // If the promise throws error don't add it
+        if (promise != null) {
+          targetKeys.push(key);
+          resultPromises.push(promise);
+        }
+      } catch (er) {
+        console.log("BigML 'predictAll' promises error: " + er);
+      }
     }
-    await Promise.all(resultPromises).then((values) => {
-      resultValues = values;
-    });
+    await Promise.all(resultPromises)
+      .then((values) => {
+        resultValues = values;
+      })
+      .catch((er) => {
+        console.log("BigML predictAll error: " + er);
+      });
     var ziped = Object.fromEntries(targetKeys.map((k, i) => [k + "", resultValues[i] + ""]));
     return JSON.stringify(ziped);
   },
@@ -72,12 +89,21 @@ const BigML = {
     await fsPromises
       .readFile("model.txt", "utf8")
       .then(async function (data) {
-        var predictionV = await predictBigML(prediction, data, toPredict);
-        var result = predictionV.object.output + "";
-        res = result;
+        await predictBigML(prediction, data, toPredict)
+          .then(function (predictionV) {
+            //here when you resolve
+            var result = predictionV.object.output + "";
+            res = result;
+          })
+          .catch(function (rej) {
+            //here when you reject the promise
+            console.log("BigML single predict rejection: " + rej);
+            res = null;
+          });
       })
       .catch((er) => {
-        console.log(er);
+        console.log("BigML predict error: " + er);
+        res = null;
       });
     return res;
   },
@@ -96,7 +122,7 @@ async function sourceInfo() {
       if (!error && sourceInfo) {
         resolve(sourceInfo);
       } else {
-        reject(error);
+        reject("BigML sourceInfo error: " + error);
       }
     });
   });
@@ -107,7 +133,7 @@ async function datasetInfo(dataset, sourceInfo) {
       if (!error && datasetInfo) {
         resolve(datasetInfo);
       } else {
-        reject(error);
+        reject("BigML datasetInfo error: " + error);
       }
     });
   });
@@ -118,7 +144,7 @@ async function modelInfo(model, datasetInfo) {
       if (!error && modelInfo) {
         resolve(modelInfo);
       } else {
-        reject(error);
+        reject("BigML modelInfo error: " + error);
       }
     });
   });
@@ -131,7 +157,7 @@ async function predictBigML(prediction, data, toPredict) {
       if (!error && prediction) {
         resolve(prediction);
       } else {
-        reject(error);
+        reject("BigML prediction error: " + error);
       }
     });
   });

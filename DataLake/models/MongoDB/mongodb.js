@@ -46,7 +46,7 @@ const MongoDB = {
         flight
           .save()
           .then(() => console.log("\u001b[32m" + `Flight ${key} Inserted to MongoDB!` + "\u001b[0m"))
-          .catch((err) => console.log(err));
+          .catch((err) => console.log("MongoDB: " + err));
       }
     });
   },
@@ -57,15 +57,21 @@ const MongoDB = {
     endDate = new Date(datesArray[1]); // Until this day (but NOT including this day)
     // Add one day to endDate so the last day will be included in the calculation
     endDate.setDate(endDate.getDate() + 1); // Until this day (Including this day)
-    var records = await flightsCollection
-      .find({
-        createdAt: {
-          $gte: startDate,
-          $lt: endDate,
-        },
-      })
-      .lean()
-      .select("-_id -createdAt -updatedAt");
+
+    try {
+      var records = await flightsCollection
+        .find({
+          createdAt: {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        })
+        .lean()
+        .select("-_id -createdAt -updatedAt");
+    } catch {
+      console.log("Error on calling MongoDB 'find'");
+    }
+
     const csvFields = [
       "flightID",
       "periodType",

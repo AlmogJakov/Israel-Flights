@@ -93,8 +93,14 @@
         HTML += "<tr><td align=center>"+"<b>Flight ID</b>"+"</td>"
             + "<td align=center>"+"<b>Arrival Prediction</b>"+"</td></tr>";
         for (const [key, value] of Object.entries(JSON.parse(data))) {
-            HTML += "<tr><td align=center>"+key+"</td>"
-                + "<td align=center>"+value+"</td></tr>";
+            HTML += "<tr><td align=center>"+key+"</td>";
+            if (value == "Heavy Delay") {
+                HTML += "<td align=center style=\"color:red\">"+value+"</td></tr>";
+            } else if (value == "Delay") {
+                HTML += "<td align=center style=\"color:#e67e00\">"+value+"</td></tr>";
+            } else {
+                HTML += "<td align=center style=\"color:green\">"+value+"</td></tr>";
+            }
         }
         HTML += "</table>";
 

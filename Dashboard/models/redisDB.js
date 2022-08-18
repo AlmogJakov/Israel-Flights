@@ -12,7 +12,7 @@ const redisDB = {
     const exists = await db.exists(dataName);
     // Return an empty array if the record does not exist
     if (!exists) {
-      return JSON.parse(JSON.stringify({}));
+      return JSON.stringify({});
     }
     // Otherwise, if it exists, get the record and return it
     let flights = await db.get(dataName);

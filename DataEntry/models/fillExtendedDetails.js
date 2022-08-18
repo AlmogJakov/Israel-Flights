@@ -61,6 +61,7 @@ const flights_details = {
     var TLVflights = {};
     for (var i = 0; i < keys.length; i++) {
       var filghtID = keys[i];
+      var filghtGlobalID = json[filghtID][16];
       var onGround = json[filghtID][14];
       TLVkeys.push(filghtID);
       TLVflights[filghtID] = [];
@@ -72,6 +73,7 @@ const flights_details = {
       var dst = json[filghtID][12];
       var data = {
         id: filghtID,
+        global_id: filghtGlobalID,
         on_ground: onGround,
         coordinate_x: coordinateX,
         coordinate_y: coordinateY,

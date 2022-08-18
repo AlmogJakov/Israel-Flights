@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "mainFont";
+  src: url("Rubik-Bold.ttf");
+}
+@font-face {
+  font-family: "secondayFont";
+  src: url("Rubik-Regular.ttf");
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -9,7 +18,8 @@ html, body {
     background-size: 110% 110%;
     background-position: center center;
     animation: shrink 5s infinite alternate;
-    font-family: "Montserrat", sans-serif;
+    /* font-family: "Montserrat", sans-serif; */
+    font-family: "mainFont";
     font-size: 16px;
     overflow: auto;
   }
@@ -38,7 +48,8 @@ html, body {
   .title-header {
     height: 210px; 
     width: 100%; 
-    background:rgb(29, 26, 26); 
+    /* background:rgb(29, 26, 26);  */
+    background: #000; 
     display:block
   }
 
@@ -62,6 +73,7 @@ html, body {
   
 h1 {
     color: #f1c40f;
+    /* color: #f1c40f; */
     font-size: 4.1rem;
     text-transform: uppercase;
     display: block;
@@ -80,7 +92,7 @@ h1 {
   h4 {
     color: #ffffff;
     font-size: 1rem;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     display: block;
     width: 100%;
     text-align: center;
@@ -131,7 +143,8 @@ h1 {
     text-decoration: none;
     text-align: center;
     text-transform: uppercase;
-    font-family: "Montserrat", sans-serif;
+    /* font-family: "Montserrat", sans-serif; */
+    font-family: "mainFont";
     font-weight: 700;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
   }
@@ -182,7 +195,7 @@ h1 {
 }
 
 .modal-header {
-  background-color: #d4ac09;
+  background-color: #d8af09;
   /* padding:16px 16px; */
   padding:4% 4%;
   color:#FFF;

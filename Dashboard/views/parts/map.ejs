@@ -16,17 +16,11 @@
         src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
         async defer>
     </script>
-    <!--
-    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
-    -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script type="text/javascript">
     //let socket;
         //var map = null;
         var map, infobox, tooltip;
-        var tooltipTemplate = '<div style="border-radius: 0.45rem;background-color:white;height:20px;width:150px;padding:5px;text-align:center"><b>{title}</b></div>';
+        var tooltipTemplate = '<div style="border-radius: 0.45rem;background-color:white;width:150px;padding:5px; padding-top:7px;text-align:center"><b>{title}</b></div>';
         function setMap() {
             socket = io.connect();
             socket.on('flights', function (msg) {
@@ -40,6 +34,15 @@
                     "landColor": "#0B334D"
                 },
                 "elements": {
+                    // "point": {
+                    //     "labelVisible": true,
+                    //     "visible":true,
+                    //     "overflow":true,
+                    // },
+                    // "countryRegion": {
+                    //     "borderVisible": false,
+                    // },
+
                     "mapElement": {
                         "labelColor": "#FFFFFF",
                         "labelOutlineColor": "#000000"
@@ -89,11 +92,19 @@
                 }
             };
             // Initialize the map - USE YOUR OWN KEY !
-            map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk", customMapStyle: myStyle});
+            map = new Microsoft.Maps.Map(document.getElementById("myMap"), { 
+                credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk", customMapStyle: myStyle,
+                allowHidingLabelsOfRoad: false
+            });
 			map.setView({
                 //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
                 center: new Microsoft.Maps.Location(33.027222, 32.0225),
-                zoom: 6
+                zoom: 6,
+                labelOverlay: Microsoft.Maps.LabelOverlay.visible,
+                // labelOverlay: Microsoft.Maps.LabelOverlay.hidden,
+                mapTypeId: Microsoft.Maps.MapTypeId.road,
+                // showMapLabels: true,
+                // allowHidingLabelsOfRoad: false,
             });
 
             //Create an infobox to use as a tooltip when hovering.
@@ -119,7 +130,7 @@
 		// source: https://github.com/microsoft/BingMapsV8CodeSamples/blob/main/Samples/Pushpins/Rotated%20Image/Pushpin%20Rotated%20Image.html
 		// source: https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-canvas-pushpin-example
 		// FIX: https://stackoverflow.com/questions/5820209/image-onload-event-not-working-in-chrome
-		function createRotatedImagePushpin(location, url, rotationAngle, filghtID, callback) {
+		function createRotatedImagePushpin(location, url, rotationAngle, flightData, callback) {
 			var img = new Image();
 			img.onload = function () {
 				var c = document.createElement('canvas');
@@ -145,13 +156,21 @@
 				var pin = new Microsoft.Maps.Pushpin(location, {
 					//Generate a base64 image URL from the canvas.
 					icon: c.toDataURL(),
+                    roundClickableArea: true,
                     //title: filghtID,
 					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
 				});
-
+                
+                var src_dst_details = ""
+                if (flightData['source'] != null && flightData['destination'] !=null) {
+                    src_dst_details = flightData['source'] + " -> " + flightData['destination'];
+                }
+                
                 pin.metadata = {
-                    title: 'ID: ' + filghtID,
-                    description: 'Discription for pin ' + filghtID
+                    title: 'ID: ' + flightData['id'] + "<br>" 
+                    + "<span style=\"display:inline-block; padding-top: 2px; font-weight:normal; font-family:secondayFont;\">" + "Global ID: " + flightData['global_id'] + "</span><br>"
+                    + "<span style=\"font-weight:normal; font-family:secondayFont;\">" + src_dst_details + "</span>",
+                    description: 'Discription for pin ' + flightData['id']
                 };
 
                 //Add a mouse events to the pushpin.
@@ -170,19 +189,43 @@
 		}
 		// end rotation
 		
-        function add(flightsData) {
-            map.entities.clear();
+        async function add(flightsData) {
             var json = JSON.parse(flightsData)
             var keys = Object.keys(json);
+            var pinsPromises = [];
+            var resultPinsValues = [];
             for (var i = 0; i < keys.length; i++) {
                 var filghtID = keys[i];
-                var coordinate_x = JSON.stringify(json[filghtID][0]['coordinate_x']);
-                var coordinate_y = JSON.stringify(json[filghtID][0]['coordinate_y']);
-                var degree = JSON.stringify(json[filghtID][0]['degree']);
+                var flightData = json[filghtID][0];
+                var coordinate_x = JSON.stringify(flightData['coordinate_x']);
+                var coordinate_y = JSON.stringify(flightData['coordinate_y']);
+                var degree = JSON.stringify(flightData['degree']);
                 var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
-			    createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
-				    map.entities.push(pin);
-			    });
+                
+			    // pinsPromises.push(await createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
+				//     //map.entities.push(pin);
+                //     //pinsPromises.push(pin);
+                //     //return pin;
+			    // }));
+                var pinFunc =
+                    new Promise(async function (resolve, reject) {
+                        await createRotatedImagePushpin(loc, 'airplane.png', degree, flightData, function (pin) {
+                            resolve(pin);
+                        });
+                    });
+
+                pinsPromises.push(pinFunc);
+                await Promise.all(pinsPromises).then((values) => {
+                    resultPinsValues = values;
+                });
+                // map.entities.clear();
+                // for (const pinV of resultPinsValues) {
+                //     map.entities.push(pinV);
+                // }
+            }
+            map.entities.clear();
+            for (const pinV of resultPinsValues) {
+                map.entities.push(pinV);
             }
         }
 
