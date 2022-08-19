@@ -1,40 +1,26 @@
-
 <div class="title-header">
     <h1>Israel Flights</h1>
-    <table style="position:relative;margin-left: auto;margin-right: auto;">
-        <th>
-            <a id="first_button" href="#" class="btn" style="width:420px;margin-left: auto;margin-right: auto;">
-                Flights waiting to take off:&nbsp;<section id="first_button_number">N/A</section>
-            </a> 
-        </th>
-        <th>
-            &nbsp;&nbsp;
-        </th>
-        <th  id="second_button">
-            <a id="second_button" href="#" class="btn" style="width:400px;margin-left: auto;margin-right: auto;">
-                Flights waiting to land:&nbsp;<section id="second_button_number">N/A</section>
-            </a> 
-        </th>
-    </table>
-    
-    <script type="text/javascript">
-    //let socket;
-    //socket = io.connect();
-    socket.on('flights', (data) => {
-        var data = JSON.parse(data);
-        var keys = Object.keys(data);
-        let waiting_to_take_off = 0;
-        let waiting_to_land = 0;
-        //waiting_to_land = keys.length;
-        keys.forEach(function (key) {
-            if (data[key][0]["landed"] == false) {
-                if (data[key][0]["extended_info"]["real_departure_time"] != null) waiting_to_land++;
-                else waiting_to_take_off++;
-            }
-        });
-        document.querySelector("#first_button_number").innerText = waiting_to_take_off;
-        document.querySelector("#second_button_number").innerText = waiting_to_land;
-    });
-    </script>
 </div>
+<div class="sub-title-header">
+    <div id="clock" class="clock-view"></div>
+</div>
+
+<script>
+    document.querySelector('#clock').addEventListener('load', startTime());
+    function startTime() {
+      const today = new Date();
+      let h = today.getHours();
+      let m = today.getMinutes();
+      let s = today.getSeconds();
+      m = checkTime(m);
+      s = checkTime(s);
+      document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
+      setTimeout(startTime, 1000);
+    }
+    
+    function checkTime(i) {
+      if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+      return i;
+    }
+</script>
 <!-- <button class="trigger">Click here to trigger the modal!</button> -->

@@ -13,8 +13,11 @@ html, body {
     /* width: 100%; */
     width: 100vw;
     height: 100%;
-    /* background: #2c3e50; */
-    background-image: url("background.jpg");
+    /* background: #242424; */
+    background: #222222;
+    /* background-image: linear-gradient(90deg, #363636 0%, #242424 35%, #0e0e0e 100%); */
+    /* background-image: url("background.jpg"); */
+    /* background-image: url("white.jpg"); */
     background-size: 110% 110%;
     background-position: center center;
     animation: shrink 5s infinite alternate;
@@ -46,20 +49,72 @@ html, body {
   }
 
   .title-header {
-    height: 210px; 
+    display:block;
+    height: 155px; 
     width: 100%; 
     /* background:rgb(29, 26, 26);  */
-    background: #000; 
-    display:block
+    /* background: #042031;  */
+    background-image: url("b2.jpg");
+    /* background-size: 110% 110%; */
+    /* background-position: center center; */
+    /* animation: shrink 5s infinite alternate; */
+    /* background:rgb(26, 28, 36);   */
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  /* @keyframes shrink {
+    0% {
+      background-size: 110%;
+    }
+    100% {
+      background-size: 100%;
+    }
+  } */
+
+  .sub-title-header {
+    display:block;
+    height: 35px;
+    width: 100%; 
+    /* background:rgb(29, 26, 26);  */
+    /* background: #000;  */
+    /* background-image: url("000.jpg"); */
+    /* background: #2d4f6b;   */
+    /* background: #030303; */
+    background: #eeeeee;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .clock-view {
+    width: 100%;
+    height:35px;
+    line-height: 35px; /* same as height! */
+    color: #121313;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 30px;
   }
 
   .map-container {
-    height: calc(100% - 250px); 
+    height: 100%; 
     display:flex;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+  }
+
+  .map-side {
+    width: 430px; 
+    display: table-cell; 
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFF;
   }
 
   .nav-bar {
@@ -72,15 +127,15 @@ html, body {
 }
   
 h1 {
-    color: #f1c40f;
     /* color: #f1c40f; */
+    color: #ffffff;
     font-size: 4.1rem;
     text-transform: uppercase;
     display: block;
     width: 100%;
     text-align: center;
     margin-block-start: 0em;
-    padding-top: 0.47em;
+    padding-top: 0.59em;
     margin-block-end: 0em;
   }
   @media screen and (max-width: 600px) {
@@ -128,9 +183,13 @@ h1 {
     text-align: center;
     appearance: none;
     background-color: transparent;
-    border: 2px solid #f1c40f;
-    border-radius: 0.6em;
-    color: #f1c40f;
+    /* border: 2px solid #f1c40f; */
+    border: 2px solid #dbdbdb;
+    /* border: 2px solid #f1c40f; */
+    border-radius: 0.2em;
+    /* border-radius: 0.6em; */
+    /* color: #f1c40f; */
+    color: #dbdbdb;
     cursor: pointer;
     display: flex;
     /* display:table; */
@@ -158,8 +217,15 @@ h1 {
   }
 
 .map {
-    border-radius: 25px;
-    border: 2px solid #000000;
+    /* border-radius: 25px; */
+    /* border-radius: 5px; */
+    border-radius: 1px;
+    /* border: 1px solid #bebebe; */
+    box-shadow:0 1px 1px rgba(0,0,0,0.12),
+        0 2px 2px rgba(0,0,0,0.12),
+        0 4px 4px rgba(0,0,0,0.12),
+        0 8px 8px rgba(0,0,0,0.12),
+        0 16px 16px rgba(0,0,0,0.12);
     /* background: #73AD21; */
     /* https://stackoverflow.com/questions/3714862/forcing-child-to-obey-parents-curved-borders-in-css */
     overflow: hidden;
