@@ -8,17 +8,12 @@
 <html>
 
 <head>
-    <title></title>
-    <meta charset="utf-8" />
-    <!-- Reference to the Bing Maps SDK -->
     <!-- Should call 'bing' with https (not http) to work with Heroku -->
     <script type='text/javascript'
         src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk'
         async defer>
     </script>
     <script type="text/javascript">
-    //let socket;
-        //var map = null;
         var map, infobox, tooltip;
         var tooltipTemplate = '<div style="border-radius: 0.45rem;background-color:white;width:150px;padding:5px; padding-top:7px;text-align:center"><b>{title}</b></div>';
         function setMap() {
@@ -26,155 +21,27 @@
             socket.on('flights', function (msg) {
                 add(msg);
             });
-            // alert("connected");
-            // map styles: https://docs.microsoft.com/en-us/bingmaps/articles/custom-map-styles-in-bing-maps
-            
-            // Modern blue dark theme
-            // var myStyle = {
-            //     "version": "1.0",
-            //     "settings": {
-            //         "landColor": "#0B334D"
-            //     },
-            //     "elements": {
-            //         // "point": {
-            //         //     "labelVisible": true,
-            //         //     "visible":true,
-            //         //     "overflow":true,
-            //         // },
-            //         // "countryRegion": {
-            //         //     "borderVisible": false,
-            //         // },
-            //         "mapElement": {
-            //             "labelColor": "#FFFFFF",
-            //             "labelOutlineColor": "#000000"
-            //         },
-            //         "political": {
-            //             "borderStrokeColor": "#144B53",
-            //             "borderOutlineColor": "#00000000"
-            //         },
-            //         "point": {
-            //             "iconColor": "#0C4152",
-            //             "fillColor": "#000000",
-            //             "strokeColor": "#0C4152"
-            //         },
-            //         "transportation": {
-            //             "strokeColor": "#000000",
-            //             "fillColor": "#000000"
-            //         },
-            //         "highway": {
-            //             "strokeColor": "#158399",
-            //             "fillColor": "#000000"
-            //         },
-            //         "controlledAccessHighway": {
-            //             "strokeColor": "#158399",
-            //             "fillColor": "#000000"
-            //         },
-            //         "arterialRoad": {
-            //             "strokeColor": "#157399",
-            //             "fillColor": "#000000"
-            //         },
-            //         "majorRoad": {
-            //             "strokeColor": "#157399",
-            //             "fillColor": "#000000"
-            //         },
-            //         "railway": {
-            //             "strokeColor": "#146474",
-            //             "fillColor": "#000000"
-            //         },
-            //         "structure": {
-            //             "fillColor": "#115166"
-            //         },
-            //         "water": {
-            //             "fillColor": "#021019"
-            //         },
-            //         "area": {
-            //             "fillColor": "#115166"
-            //         }
-            //     }
-            // };
-
+            // Conf of map style
             var myStyle = {
                 "version": "1.0",
                 "settings": {
                     "landColor": "#2a2a2a"
                 },
                 "elements": {
-                    // "point": {
-                    //     "labelVisible": true,
-                    //     "visible":true,
-                    //     "overflow":true,
-                    // },
-                    // "countryRegion": {
-                    //     "borderVisible": false,
-                    // },
-                    "mapElement": {
-                        "labelColor": "#FFFFFF",
-                        "labelOutlineColor": "#000000"
-                    },
-                    "political": {
-                        "borderStrokeColor": "#696c6c",
-                        "borderOutlineColor": "#00000000"
-                    },
-                    "point": {
-                        "iconColor": "#0C4152",
-                        "fillColor": "#000000",
-                        "strokeColor": "#0C4152"
-                    },
-                    "transportation": {
-                        "strokeColor": "#000000",
-                        "fillColor": "#000000"
-                    },
-                    "highway": {
-                        "strokeColor": "#b3b6b6",
-                        "fillColor": "#000000"
-                    },
-                    "controlledAccessHighway": {
-                        "strokeColor": "#bebebe",
-                        "fillColor": "#000000"
-                    },
-                    "arterialRoad": {
-                        "strokeColor": "#97a8ae",
-                        "fillColor": "#000000"
-                    },
-                    "majorRoad": {
-                        "strokeColor": "#91a4ac",
-                        "fillColor": "#000000"
-                    },
-                    "railway": {
-                        "strokeColor": "#889294",
-                        "fillColor": "#000000"
-                    },
-                    "structure": {
-                        "fillColor": "#115166"
-                    },
-                    "water": {
-                        "fillColor": "#10161a"
-                    },
-                    "area": {
-                        "fillColor": "#4f5253"
-                    }
+                    "mapElement": { "labelColor": "#FFFFFF", "labelOutlineColor": "#000000" },
+                    "political": { "borderStrokeColor": "#696c6c", "borderOutlineColor": "#00000000" },
+                    "point": { "iconColor": "#0C4152", "fillColor": "#000000", "strokeColor": "#0C4152" },
+                    "transportation": { "strokeColor": "#000000", "fillColor": "#000000" },
+                    "highway": { "strokeColor": "#b3b6b6", "fillColor": "#000000" },
+                    "controlledAccessHighway": { "strokeColor": "#bebebe", "fillColor": "#000000" },
+                    "arterialRoad": { "strokeColor": "#97a8ae", "fillColor": "#000000" },
+                    "majorRoad": { "strokeColor": "#91a4ac", "fillColor": "#000000" },
+                    "railway": { "strokeColor": "#889294", "fillColor": "#000000" },
+                    "structure": { "fillColor": "#115166" },
+                    "water": { "fillColor": "#10161a" },
+                    "area": { "fillColor": "#4f5253" }
                 }
             };
-            
-            // Modern light theme
-            // var myStyle = {
-            //     "version": "1.0",
-            //     "elements": {
-            //         "area": { "fillColor": '#a1d3a6' },
-            //         "water": { "fillColor": '#659ee6' },
-            //         "tollRoad": { "fillColor": '#42d14e', "strokeColor": '#29a633' },
-            //         "arterialRoad": { "fillColor": '#ffffff', "strokeColor": '#d7dae7' },
-            //         "road": { "fillColor": '#fff48c', "strokeColor": '#ffbd2f' },
-            //         "street": { "fillColor": '#ffffff', "strokeColor": '#ffffff' }
-            //     },
-            //     "settings": {
-            //         "landColor": '#efe9e1'
-            //     },
-            // };
-            // default tollRoad: a964f4
-            // default area: ffb6e591
-            // color green to land: a2d4ac
-
             // Initialize the map - USE YOUR OWN KEY !
             map = new Microsoft.Maps.Map(document.getElementById("myMap"), { 
                 // credentials: "Av1tVjvviT_3a3JIBRJZNPhFNKHiCTqGL9C5rD7uAAVU2KFgx16V3NjFP58VCBvk", customMapStyle: myStyle,
@@ -182,16 +49,10 @@
                 allowHidingLabelsOfRoad: false
             });
 			map.setView({
-                //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
                 center: new Microsoft.Maps.Location(33.027222, 32.0225),
                 zoom: 6,
                 labelOverlay: Microsoft.Maps.LabelOverlay.visible,
-                // labelOverlay: Microsoft.Maps.LabelOverlay.hidden,
-                // mapTypeId: Microsoft.Maps.MapTypeId.arterialRoad,
-                // showMapLabels: true,
-                // allowHidingLabelsOfRoad: false,
             });
-
             //Create an infobox to use as a tooltip when hovering.
             tooltip = new Microsoft.Maps.Infobox(map.getCenter(), {
                 visible: false,
@@ -219,25 +80,17 @@
 			var img = new Image();
 			img.onload = function () {
 				var c = document.createElement('canvas');
-
 				var rotationAngleRads = rotationAngle * Math.PI / 180;
-
 			   //Calculate rotated image size.
-				// c.width = Math.abs(Math.ceil(img.width * Math.cos(rotationAngleRads) + img.height * Math.sin(rotationAngleRads)));
-				// c.height = Math.abs(Math.ceil(img.width * Math.sin(rotationAngleRads) + img.height * Math.cos(rotationAngleRads)));
                 c.width = 45;
 				c.height = 45;
 				var context = c.getContext('2d');
-
 				//Move to the center of the canvas.
 				context.translate(c.width / 2, c.height / 2);
-
 				//Rotate the canvas to the specified angle in degrees.
 				context.rotate(rotationAngleRads);
-
 				//Draw the image, since the context is rotated, the image will be rotated also.
 				context.drawImage(img, -img.width / 2, -img.height / 2);
-
 				var pin = new Microsoft.Maps.Pushpin(location, {
 					//Generate a base64 image URL from the canvas.
 					icon: c.toDataURL(),
@@ -245,35 +98,27 @@
                     //title: filghtID,
 					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
 				});
-                
                 var src_dst_details = ""
                 if (flightData['source'] != null && flightData['destination'] !=null) {
                     src_dst_details = flightData['source'] + " -> " + flightData['destination'];
                 }
-                
                 pin.metadata = {
                     title: 'ID: ' + flightData['id'] + "<br>" 
                     + "<span style=\"display:inline-block; padding-top: 2px; font-weight:normal; font-family:secondayFont;\">" + "Global ID: " + flightData['global_id'] + "</span><br>"
                     + "<span style=\"font-weight:normal; font-family:secondayFont;\">" + src_dst_details + "</span>",
                     description: 'Discription for pin ' + flightData['id']
                 };
-
-                //Add a mouse events to the pushpin.
-                //Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+                // Add a mouse events to the pushpin.
+                // Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
                 Microsoft.Maps.Events.addHandler(pin, 'mouseover', pushpinHovered);
                 Microsoft.Maps.Events.addHandler(pin, 'mouseout', closeTooltip);
-                
-				if (callback) {
-					callback(pin);
-				}
+				if (callback) { callback(pin); }
 			};
-
 			//Allow cross domain image editting.
 			img.crossOrigin = 'anonymous';
 			img.src = url;
 		}
-		// end rotation
-		
+		// A func to update the flights on when new flight data is received
         async function add(flightsData) {
             var json = JSON.parse(flightsData)
             var keys = Object.keys(json);
@@ -286,43 +131,23 @@
                 var coordinate_y = JSON.stringify(flightData['coordinate_y']);
                 var degree = JSON.stringify(flightData['degree']);
                 var loc = new Microsoft.Maps.Location(coordinate_x, coordinate_y);
-                
-			    // pinsPromises.push(await createRotatedImagePushpin(loc, 'airplane.png', degree, filghtID, function (pin) {
-				//     //map.entities.push(pin);
-                //     //pinsPromises.push(pin);
-                //     //return pin;
-			    // }));
                 var pinFunc =
                     new Promise(async function (resolve, reject) {
                         await createRotatedImagePushpin(loc, 'airplane.png', degree, flightData, function (pin) {
                             resolve(pin);
                         });
                     });
-
                 pinsPromises.push(pinFunc);
                 await Promise.all(pinsPromises).then((values) => {
                     resultPinsValues = values;
                 });
-                // map.entities.clear();
-                // for (const pinV of resultPinsValues) {
-                //     map.entities.push(pinV);
-                // }
             }
             map.entities.clear();
             for (const pinV of resultPinsValues) {
                 map.entities.push(pinV);
             }
         }
-
-        function move() {
-            for (var i = map.entities.getLength() - 1; i >= 0; i--) {
-                var pushpin = map.entities.get(i);
-                if (pushpin instanceof Microsoft.Maps.Pushpin) {
-                    map.entities.removeAt(i);
-                }
-            }
-        }
-
+        // A func to show flight info on mouse hover
         function pushpinHovered(e) {
         //Hide the infobox
         infobox.setOptions({ visible: false });
@@ -336,47 +161,14 @@
             });
         }
     }
-    
+    // A func to close the tooltip on mouseout
     function closeTooltip() {
         //Close the tooltip.
         tooltip.setOptions({
             visible: false
         });
     }
-
-    function pushpinClicked(e) {
-        //Hide the tooltip
-        closeTooltip();
-        //Make sure the infobox has metadata to display.
-        if (e.target.metadata) {
-            //Set the infobox options with the metadata of the pushpin.
-            infobox.setOptions({
-                location: e.target.getLocation(),
-                title: e.target.metadata.title,
-                description: e.target.metadata.description,
-                visible: true
-            });
-        }
-    }
-		
-		
     </script>
-
-    <script>
-        //let socket;
-
-        //function initSocket() {
-        //socket is global
-        //socket = io.connect();
-        //alert("connected");
-        //socket = io.connect();
-        //socket.on('flights', function (msg) {
-        //    console.log("ffff");
-        //    add();
-        //});
-        //}<body onload="initSocket()"></body>
-    </script>
-    
 </head>
 
 <body onload="setMap()">
@@ -386,16 +178,16 @@
                 <div class="map" id="myMap" style="width: 1000px; display: table-cell;"></div>
                 <div class="map-side">
                     <section style="font-size: 24px;">Welcome!</section>
-                    <div style="width:380px; margin-left: auto;margin-right: auto; font-family: sans-serif; font-weight:bold; text-align: left;">
-                        Please note that:<br>
+                    <div style="width:380px; margin-left: auto;margin-right: auto; font-family: sans-serif; font-weight:lighter; text-align: left;">
+                        <b>Please note:</b><br><br>
                         <ol>
-                        <li>
+                        <li style="font-size:14px">
                         The flights information is received from the DataEntry server [if the DataEntry server is running].<br>
-                        </li>
-                        <li>
+                        </li><br>
+                        <li style="font-size:14px">
                         The information for the flight arrival prediction is received from the DataLake server [if both the DataEntry server and the DataLake server are running].<br>
-                        </li>
-                        <li>
+                        </li><br>
+                        <li style="font-size:14px">
                         The flight arrival prediction can be seen by clicking on the appropriate button below.<br>
                         </li>
                         </ol>
@@ -408,13 +200,6 @@
                                 Flights waiting to take off:&nbsp;<section id="first_button_number">N/A</section>
                             </a>
                     </table>
-
-                    <!-- https://weatherwidget.org/ -->
-                    <!-- <div style="margin-left: auto;margin-right: auto; max-width: 376px;" id="ww_a92dc91847aa1" v='1.20' loc='id' a='{"t":"horizontal","lang":"en","ids":["wl9100"],"cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","sl_sot":"celsius","sl_ics":"one_a","font":"Arial","el_phw":3,"el_whr":3}'>Weather for the Following Location: <a href="https://2ua.org/isr/tel_aviv/map/" id="ww_a92dc91847aa1_u" target="_blank">Tel Aviv map, Israel</a></div><script async src="https://srv1.weatherwidget.org/js/?id=ww_a92dc91847aa1"></script> -->
-                    <!-- <div style="text-decoration:none; border-radius: 10px; font-family: sans-serif; margin-left: auto;margin-right: auto; color: #455052; max-width: 376px; width: 100%; border: 1px solid #ffffff; background-image: radial-gradient(circle, #fff, #f5faff, #e5efff);"><script src="tel+aviv.js"></script></div> -->
-                    <!-- <div style="margin-left: auto;margin-right: auto; color: #455052; max-width: 376px; width: 100%; border: 1px solid #ffffff; background-image: radial-gradient(circle, #fff, #f5faff, #e5efff);"><script src="https://www.weatherwx.com/weather-conditions-b/il/tel+aviv.js"></script></div> -->
-                    <!-- TODO: weater: https://codepen.io/amit7soni/pen/vzxgBE -->
-
                     <!-- Weater Widget: https://www.tomorrow.io/weather/widget/ -->
                     <script>
                     (function(d, s, id) {
@@ -422,50 +207,39 @@
                             if (window.__TOMORROW__) {
                                 window.__TOMORROW__.renderWidget();
                             }
-                            return;
-                        }
+                            return;}
                         const fjs = d.getElementsByTagName(s)[0];
                         const js = d.createElement(s);
                         js.id = id;
                         js.src = "https://www.tomorrow.io/v1/widget/sdk/sdk.bundle.min.js";
-            
                         fjs.parentNode.insertBefore(js, fjs);
                     })(document, 'script', 'tomorrow-sdk');
                     </script>
-            
                     <div class="tomorrow"
                         data-location-id="057564"
                         data-language="EN"
                         data-unit-system="METRIC"
                         data-skin="dark"
                         data-widget-type="aqiMini"
-                        style="padding-bottom:22px;position:relative; margin-left: auto;margin-right: auto; max-width: 376px;"
-                    >
-                        <a
-                        href="https://www.tomorrow.io/weather/"
+                        style="padding-bottom:22px;position:relative; margin-left: auto;margin-right: auto; max-width: 376px;">
+                        <a href="https://www.tomorrow.io/weather/"
                         rel="nofollow noopener noreferrer"
                         target="_blank"
-                        style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;"
-                        >
-                        <img
-                            alt="Powered by Tomorrow.io"
+                        style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;">
+                        <img alt="Powered by Tomorrow.io"
                             src="https://weather-website-client.tomorrow.io/img/powered-by-tomorrow.svg"
                             width="140"
-                            height="15"
-                        />
+                            height="15" />
                         </a>
                     </div>
                     <!-- END Weater Widget -->
 
                     <script type="text/javascript">
-                        //let socket;
-                        //socket = io.connect();
                         socket.on('flights', (data) => {
                             var data = JSON.parse(data);
                             var keys = Object.keys(data);
                             let waiting_to_take_off = 0;
                             let waiting_to_land = 0;
-                            //waiting_to_land = keys.length;
                             keys.forEach(function (key) {
                                 if (data[key][0]["landed"] == false) {
                                     if (data[key][0]["extended_info"]["real_departure_time"] != null) waiting_to_land++;
@@ -479,10 +253,6 @@
                 </div>
             </div>
         </div>
-        <!-- <input type="button" onclick="add()" value="הוסף אייקונים" />
-        <input type="button" onclick="move()" value="הסר אייקונים" /> -->
     </div>
 </body>
-</body>
-
 </html>

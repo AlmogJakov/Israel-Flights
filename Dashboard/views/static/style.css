@@ -54,7 +54,7 @@ html, body {
     width: 100%; 
     /* background:rgb(29, 26, 26);  */
     /* background: #042031;  */
-    background-image: url("b2.jpg");
+    background-image: url("banner.jpg");
     /* background-size: 110% 110%; */
     /* background-position: center center; */
     /* animation: shrink 5s infinite alternate; */
@@ -109,7 +109,7 @@ html, body {
   }
 
   .map-side {
-    width: 430px; 
+    width: 480px; 
     display: table-cell; 
     align-items: center;
     text-align: center;
@@ -185,11 +185,12 @@ h1 {
     background-color: transparent;
     /* border: 2px solid #f1c40f; */
     border: 2px solid #dbdbdb;
+    background-color: #dddcdc;
     /* border: 2px solid #f1c40f; */
     border-radius: 0.2em;
     /* border-radius: 0.6em; */
     /* color: #f1c40f; */
-    color: #dbdbdb;
+    color: #242424;
     cursor: pointer;
     display: flex;
     /* display:table; */
@@ -342,6 +343,7 @@ ol {
 
 li {
   list-style: none;
+  font-size: 8; 
   counter-increment: foo;
   display: table-row;
 }
