@@ -327,3 +327,29 @@ h1 {
 }
 
 /* ------------------- END Modal style ------------------- */
+
+/* ------------------- keep indent for second line in ordered lists via CSS ------------------- */
+/* https://stackoverflow.com/questions/10428720/how-to-keep-indent-for-second-line-in-ordered-lists-via-css */
+ol,li {
+  margin: 0;
+  padding: 0;
+}
+
+ol {
+  counter-reset: foo;
+  display: table;
+}
+
+li {
+  list-style: none;
+  counter-increment: foo;
+  display: table-row;
+}
+
+li::before {
+  content: counter(foo) ".";
+  display: table-cell;
+  text-align: left;
+  /* padding-left: .3em; */
+}
+/* ------------------- END keep indent for second line in ordered lists via CSS ------------------- */
