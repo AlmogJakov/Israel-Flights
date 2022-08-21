@@ -7,8 +7,8 @@ const io = require("socket.io")(server, {
 const controllerRouter = require("./routes/controller");
 var API = require("./models/API");
 
-const bodyParser = require("body-parser");
-const path = require("path");
+// const bodyParser = require("body-parser");
+// const path = require("path");
 
 //----------------- Middleware -----------------
 // app.set("view engine", "ejs");
@@ -24,5 +24,5 @@ API.Run();
 app.use("/", controllerRouter);
 
 const Port = process.env.PORT | 3000;
-//http://localhost:3000
+// Server Link: http://localhost:3000
 server.listen(Port, () => console.log(`App listening at http://localhost:${Port}`));

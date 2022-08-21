@@ -50,6 +50,7 @@
             });
 			map.setView({
                 center: new Microsoft.Maps.Location(33.027222, 32.0225),
+                // center: map.getCenter(),
                 zoom: 6,
                 labelOverlay: Microsoft.Maps.LabelOverlay.visible,
             });
@@ -68,14 +69,16 @@
             infobox.setMap(map);
         }
     </script>
-
+    
     <script type='text/javascript'>
+        
 		// rotation
 		// source: https://social.msdn.microsoft.com/Forums/sqlserver/en-US/02de6b85-ee3d-4780-a4fd-3b944f0fc1b4/rotate-custom-image-pushpin?forum=bingmapsajax
 		// source: https://www.anycodings.com/1questions/5317334/how-to-rotate-pushpin-image-in-bing-map#:~:text=https%3A//bingmapsv8samples.azurewebsites.net/%23Pushpin_RotatedImage
 		// source: https://github.com/microsoft/BingMapsV8CodeSamples/blob/main/Samples/Pushpins/Rotated%20Image/Pushpin%20Rotated%20Image.html
 		// source: https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/pushpins/custom-canvas-pushpin-example
 		// FIX: https://stackoverflow.com/questions/5820209/image-onload-event-not-working-in-chrome
+        // Animation: https://blogs.bing.com/maps/2014/08/07/bring-your-maps-to-life-creating-animations-with-bing-maps-javascript/
 		function createRotatedImagePushpin(location, url, rotationAngle, flightData, callback) {
 			var img = new Image();
 			img.onload = function () {
@@ -91,12 +94,13 @@
 				context.rotate(rotationAngleRads);
 				//Draw the image, since the context is rotated, the image will be rotated also.
 				context.drawImage(img, -img.width / 2, -img.height / 2);
+                
 				var pin = new Microsoft.Maps.Pushpin(location, {
-					//Generate a base64 image URL from the canvas.
+					// Generate a base64 image URL from the canvas.
 					icon: c.toDataURL(),
                     roundClickableArea: true,
                     //title: filghtID,
-					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Anchor to center of image.
+					anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2), //Anchor to center of image.
 				});
                 var src_dst_details = ""
                 if (flightData['source'] != null && flightData['destination'] !=null) {
@@ -177,18 +181,19 @@
             <div style="display: table-row; ">
                 <div class="map" id="myMap" style="width: 1000px; display: table-cell;"></div>
                 <div class="map-side">
-                    <section style="font-size: 24px;">Welcome!</section>
+                    <section style="font-size: 26px;">Welcome!</section>
                     <div style="width:380px; margin-left: auto;margin-right: auto; font-family: sans-serif; font-weight:lighter; text-align: left;">
-                        <b>Please note:</b><br><br>
+                        <!-- <b>Please note:</b><br> -->
+                        <section style="font-size:8.0px"><br></section>
                         <ol>
-                        <li style="font-size:14.5px">
-                        The flights information is received from the DataEntry server [if the DataEntry server is running].<br>
+                        <li style="font-size:15.0px">
+                        The flights information is received from the 'DataEntry' server so please make sure that the 'DataEntry' server is running.<br>
                         </li><br>
-                        <li style="font-size:14.5px">
-                        The information for the flight arrival prediction is received from the DataLake server [if both the DataEntry server and the DataLake server are running].<br>
+                        <li style="font-size:15.0px">
+                        The flights arrival type prediction is received from the 'DataLake' server so please make sure that both the 'DataEntry' server and the 'DataLake' server are running.<br>
                         </li><br>
-                        <li style="font-size:14.5px">
-                        The flight arrival prediction can be seen by clicking on the appropriate button below.<br>
+                        <li style="font-size:15.0px">
+                        The flights arrival type prediction can be seen by clicking on the appropriate button below.<br>
                         </li>
                         </ol>
                     </div>

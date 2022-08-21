@@ -9,7 +9,7 @@ const kafka = require("./produceKafka");
 var iteratorCounter = 0;
 var prev_flights = {};
 var api_output = {};
-// waiting delay in milli seconds
+/* Waiting delay (in milliseconds) before each produce */
 var waitingDelay = 20000;
 
 const api = {
