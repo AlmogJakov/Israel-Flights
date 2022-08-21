@@ -2,18 +2,20 @@
 <html>
 
 <head style="vertical-align: middle; width:100%;">
+    <title>Prediction Control</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript">
-    let socket;
+        let socket = io();
+        socket = io.connect();
     </script>
-    <body style="display: table-cell; vertical-align: middle; width:100%;">
+</head>
+<body style="width:100%; height: 100%;">
 
     <!-- include header -->
     <%- include("parts/header"); %>
-    
-    </body>
-</head>
+
+</body>
 
 </html>

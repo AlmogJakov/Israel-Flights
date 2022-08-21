@@ -1,7 +1,11 @@
 
-
+<div class="title-header">
+  <h1>Create Machine Learning Model</h1>
+</div>
+<div class="sub-title-header">
+  
+</div>
 <table style="display: table-cell; vertical-align: middle;">
-    <h1>Create Machine Learning Model</h1>
     <table style="position:relative;margin-left: auto;margin-right: auto;"></table>
     <div style="width:800px; margin:0 auto; text-align:center;" class="container">
         <h2>Date Range</h2>
@@ -19,17 +23,17 @@
     <link rel="stylesheet" href="deskyCal.css" />
     <script>
         const d = Date.parse('04 Dec 2025 00:12:00 GMT');
-        initDeskyCalendar("basic", null, null, true);
-        initDeskyCalendar("single", "single");
+        // initDeskyCalendar("basic", null, null, true);
+        // initDeskyCalendar("single", "single");
         initDeskyCalendar("start", "single", null, null, "end");
         initDeskyCalendar("end", "single");
-        initDeskyCalendar("callback", "double", null, null, null, null, null, null, call_back_function);
+        // initDeskyCalendar("callback", "double", null, null, null, null, null, null, call_back_function);
         const d2 = new Date();
         const d3 = new Date();
         d2.setTime(d2.getTime()-(2*3600*24*1000));
         d3.setTime(d3.getTime()+(10*3600*24*1000));
-        initDeskyCalendar("before", "single", null, null, null, d2);
-        initDeskyCalendar("beforeafter", "single", null, null, null, d2, d3);
+        // initDeskyCalendar("before", "single", null, null, null, d2);
+        // initDeskyCalendar("beforeafter", "single", null, null, null, d2, d3);
         function call_back_function(d) {
           /// accept the returned date as only argument
           // calc date difference
