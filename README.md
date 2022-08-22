@@ -32,21 +32,21 @@ The system consists of three sub-systems which together enable Near Real Time mo
 
 The system predicts the arrival times from the following data: type of period (holidays, summer vacations, normal days), month of the year, day of the week, company, country of origin, destination country, type of flight (up to 1500 kilometers: short, up to 3500 kilometers: medium, over 3500 kilometers: long), the weather in the country of origin, the weather in the destination country, the nature of arrival (under 15 minutes: normal, up to an hour: late, over an hour: severely late).     
    
-- Subsystem A (data collection) will use the Axiom package to collect data cyclically from cloud services, will record in a MySql database (local/Docker) the access to a type of service, including the day and time of access.   
+- Subsystem A (data collection) uses the Axiom package to collect data cyclically from cloud services, and records the accesses to the data in MySql database (local/Docker), including the day and time of access.   
 - Subsystem B (dashboard) displays the data received from subsystem A on a map using the Bing Maps infrastructure. In addition, the system will store the data for retrieval using Redis.   
 - Subsystem C (datalake & machne learning) stores historical flight data using MongoDB and creates a prediction model using BigML for predicting the arrival times of the flights.   
    
 <p align="center"><img src="https://user-images.githubusercontent.com/68508896/185351045-d63cc293-1993-4d04-a457-61afcd00fe71.png" width="600px"/></p>
    
-The organization of services is implemented in the Node.js environment and in the MVC pattern.   
+The organization of services is implemented in the Node.js environment and under the MVC (Model-View-Controller) design pattern.   
 
-<p align="center"><img src="https://user-images.githubusercontent.com/68508896/185351757-4303ab5c-1ba9-4180-9e05-b0f025d8a0be.png" width="250px"/></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/68508896/186008951-d7911a94-0361-4913-8f4a-f277e297d02b.png" width="350px"/></p>
 
 
 <h2>Remarks & Data analysis</h2>   
 
-- (flightradar24) After a quick sampling of about 50-100 flight records (where each sample is individual access to extended flight details) it is necessary to wait about 15-20 seconds in order not to receive a refusal error (403) from the flightradar24 server.   
-- (flightradar24) It seems that it takes a while for a flight to be updated as 'landed' even though the flight has already landed! Therefore, the 'landed' record is the last record that we were able to capture in real time   
+- (flightradar24 API) After a quick sampling of about 50-100 flight records (where each sample is individual access to extended flight details) it is necessary to wait about 15-20 seconds in order not to receive a refusal error (403) from the flightradar24 server.   
+- (flightradar24 API) It seems that it takes a while for a flight to be updated as 'landed' even though the flight has already landed! Therefore, the 'landed' record is the last record that we were able to capture in real time   
 - In order to fill weather info ('fillWeatherDetails') or period info ('fillPeriodDetails') to a flight record, It is necessary to first fill the extended details using 'fillExtendedDetails' (Because fetching weather info and fetching period info depends on the parameters obtained after running 'fillExtendedDetails'). In other words, It is necessary to call 'fillExtendedDetails' before calling 'fillWeatherDetails' or 'fillPeriodDetails'.   
 
 
