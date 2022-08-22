@@ -34,7 +34,7 @@ The system predicts the arrival times from the following data: type of period (h
    
 - Subsystem A (data collection) uses the Axiom package to collect data cyclically from cloud services, and records the accesses to the data in MySql database (local/Docker), including the day and time of access.   
 - Subsystem B (dashboard) displays the data received from subsystem A on a map using the Bing Maps infrastructure. In addition, the system will store the data for retrieval using Redis.   
-- Subsystem C (datalake & machne learning) stores historical flight data using MongoDB and creates a prediction model using BigML for predicting the arrival times of the flights.   
+- Subsystem C (datalake & machine learning) stores historical flight data using MongoDB and uses BigML to create a prediction model which will be used to predict the type of arrival time of the flights.   
    
 <p align="center"><img src="https://user-images.githubusercontent.com/68508896/185351045-d63cc293-1993-4d04-a457-61afcd00fe71.png" width="600px"/></p>
    
