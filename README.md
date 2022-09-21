@@ -1,4 +1,4 @@
-# BigDataProject
+# Israel Flights - Big Data Project
 
 <h2>Overview</h2>
 
