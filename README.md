@@ -3,12 +3,14 @@
 <h2>Overview</h2>
 
 
-<table align="center">
-	
-<h3>Dashboard</h3>
-<tr><td>
-<p align="center"><img src="https://user-images.githubusercontent.com/68508896/191278721-aa3c1f60-90c4-4bfc-8c13-ebc1ad82c9c8.png"/></p></td></tr>
-</table>
+
+| Dashboard Server |
+| ------------- |
+| <p align="center"><img src="https://user-images.githubusercontent.com/68508896/191278721-aa3c1f60-90c4-4bfc-8c13-ebc1ad82c9c8.png"/></p> |
+
+| DataEntry Server | DataLake Server |
+| ------------- | ------------- |
+| <p align="center"><img src="https://user-images.githubusercontent.com/68508896/191405320-df4f94e6-d1c8-4195-9f92-a67b9633195c.png"/></p>  | <p align="center"><img src="https://user-images.githubusercontent.com/68508896/191405632-eee8c018-b0b3-466a-9bcc-b9af86f2fb98.png"/></p>  |
 
 
 <h3>Technologies</h3>
