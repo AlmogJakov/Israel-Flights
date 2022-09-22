@@ -250,6 +250,7 @@ h1 {
 
 .modal {
     position: fixed;
+    z-index: 10000;
     left: 0;
     top: 0;
     width: 100%;
@@ -263,7 +264,7 @@ h1 {
 
 .modal-header {
   /* background-color: #d8af09; */
-  background-color: #d8af09;
+  background-color: #1b1818;
   /* padding:16px 16px; */
   padding:4% 4%;
   color:#FFF;
@@ -271,7 +272,8 @@ h1 {
 }
 
 .modal-title {
-  color: #000;
+  /* color: #000; */
+  color: rgb(231, 231, 231);
   font-size: 1.1rem;
   text-transform: uppercase;
   display: block;
@@ -283,6 +285,8 @@ h1 {
 
 .modal-content {
     position: absolute;
+    /* drop glow */
+    box-shadow: 0px 0px 1px 1px rgba(248, 248, 248, 0.705);
     /* max-height: 20%; */
     top: 50%;
     left: 50%;
@@ -290,7 +294,7 @@ h1 {
     background-color: white;
     /* padding: 1rem 1.5rem; */
     width: 24rem;
-    border-radius: 0.5rem;
+    border-radius: 0.2rem;
     /* add scrollbar */
     overflow: hidden;
     /* overflow-y: scroll; */
@@ -301,10 +305,10 @@ h1 {
   left: 50%;
   padding: 1rem 1.5rem;
   /* add scrollbar */
-  overflow: visible;
+  overflow: hidden;
   overflow-y: scroll;
-  /* set max-height to the window height less 50px */
-  max-height: calc( 100vh - 100px );
+  /* set max-height to 80% of window height */
+  max-height: calc( 8 * (100vh / 10) );
 }
 
 .close-button {
