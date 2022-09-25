@@ -17,19 +17,20 @@
 
 <span>
   
-  <img src="https://user-images.githubusercontent.com/68508896/192110139-17516596-8625-46be-8f8a-1f75f5f11a50.png" title="JS" alt="js" height="80"/>
+  <img src="https://user-images.githubusercontent.com/68508896/192110139-17516596-8625-46be-8f8a-1f75f5f11a50.png" title="Java Script" alt="js" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110164-3cc0735d-a0b6-4b74-a3cc-dd29f730b34b.png" title="CSS" alt="css" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110177-06b7c17a-0317-40d7-9ba2-d5f1d8f708dc.png" title="Html" alt="html" height="80"/>
   
+  <img src="https://user-images.githubusercontent.com/68508896/192110208-46336dc4-59cf-486a-8cab-21d0990aee04.png" title="NodeJS" alt="nodejs" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110492-52dc3219-22f9-420b-b2a2-ddc2e4d18686.png" title="MongoDB" alt="mongodb" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110203-d3cc3f86-6d77-49cf-af16-89c3bcd314c6.png" title="Redis" alt="redis" height="80"/>
-  <img src="https://user-images.githubusercontent.com/68508896/192110208-46336dc4-59cf-486a-8cab-21d0990aee04.png" title="NodeJS" alt="nodejs" height="80"/>
   
   <img src="https://user-images.githubusercontent.com/68508896/192110212-7e6d8560-9a46-4301-b8e0-bf58c387e7ac.png" title="mySQL" alt="mySQL" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110220-ab9d7353-60cd-4dfa-a397-d03d1a78ae7b.png" title="Docker" alt="docker" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110223-f8439115-21e5-4ce9-8013-39669f7882f4.png" title="Kafka" alt="kafka" height="80"/>
   
-  <img src="https://user-images.githubusercontent.com/68508896/192110224-2b9dfa65-dcaf-4b77-af4b-bcfe189c5b7f.png" title="SocketIO" alt="socketio" height="80"/>
+  <img src="https://user-images.githubusercontent.com/68508896/192123576-0d720f3f-4367-4063-8ea4-bff1a6694019.png" title="BigML" alt="expressjs" height="80"/>
+  <img src="https://user-images.githubusercontent.com/68508896/192110224-2b9dfa65-dcaf-4b77-af4b-bcfe189c5b7f.png" title="Socket IO" alt="socketio" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110229-e29d4f50-b251-48ef-85d4-4363fbb7d993.png" title="Bing Maps" alt="bingmaps" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110399-78e8e720-449d-433e-aed0-9b48257cbb87.png" title="ExpressJS" alt="expressjs" height="80"/>
 
