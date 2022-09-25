@@ -29,7 +29,7 @@
   <img src="https://user-images.githubusercontent.com/68508896/192110220-ab9d7353-60cd-4dfa-a397-d03d1a78ae7b.png" title="Docker" alt="docker" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110223-f8439115-21e5-4ce9-8013-39669f7882f4.png" title="Kafka" alt="kafka" height="80"/>
   
-  <img src="https://user-images.githubusercontent.com/68508896/192123576-0d720f3f-4367-4063-8ea4-bff1a6694019.png" title="BigML" alt="expressjs" height="80"/>
+  <img src="https://user-images.githubusercontent.com/68508896/192123630-6f8e9c06-11e7-49ec-b884-18329064cd46.png" title="BigML" alt="expressjs" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110224-2b9dfa65-dcaf-4b77-af4b-bcfe189c5b7f.png" title="Socket IO" alt="socketio" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110229-e29d4f50-b251-48ef-85d4-4363fbb7d993.png" title="Bing Maps" alt="bingmaps" height="80"/>
   <img src="https://user-images.githubusercontent.com/68508896/192110399-78e8e720-449d-433e-aed0-9b48257cbb87.png" title="ExpressJS" alt="expressjs" height="80"/>
@@ -42,6 +42,7 @@
 In the current period, in addition to the data extracted from operational systems, many data are located and collected from a variety of sources as a basis for analysis, forming insights, adopting strategies and evidence-based decision-making.   
 Big Data Analytics systems require many organizational resources, so using cloud service providers for storage and processing is a common practice.
 In planning a distributed system of this type, there is no obstacle to weaving a variety of services from several providers, combining services originating from the organization itself, into a complete solution.   
+
 In the current project, we will create a solution for data processing and display inspired by the Lamda template, which monitors air traffic to Israel through Israel and enables machine learning and the formation of a predictive model from the accumulated data - the solution will integrate cloud services and web services into a complete system.   
    
 The system consists of three sub-systems which together enable Near Real Time monitoring of landings and takeoffs via Dashboard as well as the creation of a prediction model, for each flight, whether it will be on time or delayed in the schedule.    
